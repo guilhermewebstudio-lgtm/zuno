@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f8fa;
+  --foreground: #12203f;
+
+  --zuno-navy: #123a8c;
+  --zuno-navy-dark: #0c2a66;
+  --zuno-orange: #f5891f;
+  --zuno-green: #34a853;
+  --zuno-purple: #7c4fd6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-zuno-navy: var(--zuno-navy);
+  --color-zuno-navy-dark: var(--zuno-navy-dark);
+  --color-zuno-orange: var(--zuno-orange);
+  --color-zuno-green: var(--zuno-green);
+  --color-zuno-purple: var(--zuno-purple);
+  --font-sans: var(--font-poppins);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+.zuno-gradient-text {
+  background: linear-gradient(90deg, var(--zuno-orange), var(--zuno-purple), var(--zuno-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.zuno-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.35;
+  pointer-events: none;
+}
