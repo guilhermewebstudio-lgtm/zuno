@@ -15,7 +15,18 @@ import {
   Trash2,
   CheckCircle2,
   ArrowLeft,
+  Mail,
+  Send,
 } from "lucide-react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
 interface Stats {
   totalUsers: number;
@@ -23,6 +34,7 @@ interface Stats {
   activeListings: number;
   featuredListings: number;
   pendingReports: number;
+  daily: { date: string; utilizadores: number; anuncios: number }[];
 }
 
 interface AdminUser {
@@ -50,11 +62,17 @@ interface AdminListing {
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [tab, setTab] = useState<"users" | "listings">("users");
+  const [tab, setTab] = useState<"dashboard" | "users" | "listings" | "email">("dashboard");
   const [stats, setStats] = useState<Stats | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [listings, setListings] = useState<AdminListing[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
+  const [emailTarget, setEmailTarget] = useState<"all" | "with_listings">("all");
+  const [sending, setSending] = useState(false);
+  const [emailResult, setEmailResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
 
   useEffect(() => {
     if (!loading && (!user || !user.isAdmin)) {
@@ -84,9 +102,7 @@ export default function AdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, isBanned: !isBanned }),
     });
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, isBanned: !isBanned } : u))
-    );
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, isBanned: !isBanned } : u)));
   }
 
   async function toggleFeatured(listingId: string, isFeatured: boolean) {
@@ -95,9 +111,7 @@ export default function AdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ listingId, isFeatured: !isFeatured }),
     });
-    setListings((prev) =>
-      prev.map((l) => (l.id === listingId ? { ...l, isFeatured: !isFeatured } : l))
-    );
+    setListings((prev) => prev.map((l) => (l.id === listingId ? { ...l, isFeatured: !isFeatured } : l)));
   }
 
   async function removeListing(listingId: string) {
@@ -110,20 +124,40 @@ export default function AdminPage() {
     setListings((prev) => prev.filter((l) => l.id !== listingId));
   }
 
+  async function sendEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setSending(true);
+    setEmailResult(null);
+    try {
+      const res = await fetch("/api/admin/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject: emailSubject, message: emailMessage, target: emailTarget }),
+      });
+      const data = await res.json();
+      setEmailResult(data);
+    } finally {
+      setSending(false);
+    }
+  }
+
   if (loading || !user?.isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-400">
-        A verificar acesso...
-      </div>
-    );
+    return <div className="min-h-screen flex items-center justify-center text-gray-400">A verificar acesso...</div>;
   }
 
   const statCards = [
     { label: "Utilizadores", value: stats?.totalUsers ?? "—", icon: Users, color: "var(--zuno-navy)" },
     { label: "Anúncios totais", value: stats?.totalListings ?? "—", icon: ListChecks, color: "var(--zuno-navy)" },
-    { label: "Anúncios ativos", value: stats?.activeListings ?? "—", icon: CheckCircle2, color: "var(--zuno-orange)" },
-    { label: "Em destaque", value: stats?.featuredListings ?? "—", icon: Star, color: "var(--zuno-orange)" },
+    { label: "Anúncios ativos", value: stats?.activeListings ?? "—", icon: CheckCircle2, color: "var(--zuno-gold)" },
+    { label: "Em destaque", value: stats?.featuredListings ?? "—", icon: Star, color: "var(--zuno-gold)" },
     { label: "Denúncias pendentes", value: stats?.pendingReports ?? "—", icon: Flag, color: "#e0483e" },
+  ];
+
+  const tabs = [
+    { key: "dashboard" as const, label: "Dashboard" },
+    { key: "users" as const, label: "Utilizadores" },
+    { key: "listings" as const, label: "Anúncios" },
+    { key: "email" as const, label: "Emails" },
   ];
 
   return (
@@ -136,9 +170,7 @@ export default function AdminPage() {
         >
           <div className="flex items-center gap-2">
             <ShieldCheck className="text-white" size={26} />
-            <h1 className="text-2xl md:text-3xl font-bold text-white">
-              Painel de administração
-            </h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white">Painel de administração</h1>
           </div>
           <Link
             href="/"
@@ -149,7 +181,7 @@ export default function AdminPage() {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
           {statCards.map((s, i) => (
             <motion.div
               key={s.label}
@@ -165,33 +197,59 @@ export default function AdminPage() {
           ))}
         </div>
 
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setTab("users")}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-              tab === "users"
-                ? "bg-[var(--zuno-navy)] text-white"
-                : "bg-white text-gray-500 border border-gray-200"
-            }`}
-          >
-            Utilizadores
-          </button>
-          <button
-            onClick={() => setTab("listings")}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-              tab === "listings"
-                ? "bg-[var(--zuno-navy)] text-white"
-                : "bg-white text-gray-500 border border-gray-200"
-            }`}
-          >
-            Anúncios
-          </button>
+        <div className="flex gap-2 mb-6 flex-wrap">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                tab === t.key ? "bg-[var(--zuno-navy)] text-white" : "bg-white text-gray-500 border border-gray-200"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
 
         {dataLoading ? (
           <p className="text-gray-400 text-sm">A carregar dados...</p>
+        ) : tab === "dashboard" ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl border border-black/5 shadow-sm p-6"
+          >
+            <h3 className="font-bold text-[var(--zuno-navy-dark)] mb-1">Atividade nos últimos 14 dias</h3>
+            <p className="text-xs text-gray-400 mb-6">Novos utilizadores e anúncios publicados por dia</p>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={stats?.daily || []}>
+                  <defs>
+                    <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0f2951" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#0f2951" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorListings" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#e2822f" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#e2822f" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#999" }} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#999" }} />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="utilizadores" stroke="#0f2951" fill="url(#colorUsers)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="anuncios" stroke="#e2822f" fill="url(#colorListings)" strokeWidth={2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[var(--zuno-navy)]" /> Utilizadores</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[var(--zuno-gold)]" /> Anúncios</span>
+            </div>
+          </motion.div>
         ) : tab === "users" ? (
-          <div className="bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-500 text-left">
                 <tr>
@@ -206,7 +264,7 @@ export default function AdminPage() {
                 {users.map((u) => (
                   <tr key={u.id} className="border-t border-gray-100">
                     <td className="px-4 py-3 font-medium text-[var(--zuno-navy-dark)]">
-                      {u.name} {u.isAdmin && <span className="text-[var(--zuno-orange)] text-xs ml-1">(admin)</span>}
+                      {u.name} {u.isAdmin && <span className="text-[var(--zuno-gold)] text-xs ml-1">(admin)</span>}
                     </td>
                     <td className="px-4 py-3 text-gray-500">{u.email}</td>
                     <td className="px-4 py-3">{u._count.listings}</td>
@@ -233,8 +291,8 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
-        ) : (
-          <div className="bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden">
+        ) : tab === "listings" ? (
+          <div className="bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-500 text-left">
                 <tr>
@@ -250,22 +308,18 @@ export default function AdminPage() {
                 {listings.map((l) => (
                   <tr key={l.id} className="border-t border-gray-100">
                     <td className="px-4 py-3 font-medium text-[var(--zuno-navy-dark)]">
-                      {l.title} {l.isFeatured && <Star size={12} className="inline text-[var(--zuno-orange)] ml-1" />}
+                      {l.title} {l.isFeatured && <Star size={12} className="inline text-[var(--zuno-gold)] ml-1" />}
                     </td>
                     <td className="px-4 py-3 text-gray-500">{l.user.name}</td>
                     <td className="px-4 py-3 text-gray-500">{l.category?.namePt}</td>
                     <td className="px-4 py-3 text-gray-500">{l.status}</td>
                     <td className="px-4 py-3">
-                      {l._count.reports > 0 ? (
-                        <span className="text-red-500 font-semibold">{l._count.reports}</span>
-                      ) : (
-                        "0"
-                      )}
+                      {l._count.reports > 0 ? <span className="text-red-500 font-semibold">{l._count.reports}</span> : "0"}
                     </td>
                     <td className="px-4 py-3 flex gap-3">
                       <button
                         onClick={() => toggleFeatured(l.id, l.isFeatured)}
-                        className="text-xs font-semibold text-gray-500 hover:text-[var(--zuno-orange)] transition-colors"
+                        className="text-xs font-semibold text-gray-500 hover:text-[var(--zuno-gold)] transition-colors"
                       >
                         {l.isFeatured ? "Remover destaque" : "Destacar"}
                       </button>
@@ -289,6 +343,73 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 max-w-2xl"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <Mail size={18} className="text-[var(--zuno-navy)]" />
+              <h3 className="font-bold text-[var(--zuno-navy-dark)]">Enviar email a utilizadores</h3>
+            </div>
+            <p className="text-xs text-gray-400 mb-5">
+              Envia novidades, promoções ou avisos para todos os utilizadores registados.
+            </p>
+
+            <form onSubmit={sendEmail} className="space-y-4">
+              <div>
+                <label className="text-xs font-medium text-gray-500">Destinatários</label>
+                <select
+                  value={emailTarget}
+                  onChange={(e) => setEmailTarget(e.target.value as "all" | "with_listings")}
+                  className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 ring-[var(--zuno-navy)]"
+                >
+                  <option value="all">Todos os utilizadores</option>
+                  <option value="with_listings">Só quem tem anúncios publicados</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500">Assunto</label>
+                <input
+                  required
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 ring-[var(--zuno-navy)]"
+                  placeholder="Ex: Novidades no Zuno!"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500">Mensagem</label>
+                <textarea
+                  required
+                  rows={6}
+                  value={emailMessage}
+                  onChange={(e) => setEmailMessage(e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 ring-[var(--zuno-navy)] resize-none"
+                  placeholder="Escreve a mensagem que queres enviar..."
+                />
+              </div>
+
+              {emailResult && (
+                <p className="text-sm text-green-600">
+                  Enviado a {emailResult.sent} de {emailResult.total} utilizadores
+                  {emailResult.failed > 0 && ` (${emailResult.failed} falharam)`}.
+                </p>
+              )}
+
+              <motion.button
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                type="submit"
+                disabled={sending}
+                className="flex items-center gap-2 bg-[var(--zuno-navy)] text-white font-semibold px-5 py-2.5 rounded-xl text-sm disabled:opacity-60"
+              >
+                <Send size={15} />
+                {sending ? "A enviar..." : "Enviar email"}
+              </motion.button>
+            </form>
+          </motion.div>
         )}
       </div>
     </main>
