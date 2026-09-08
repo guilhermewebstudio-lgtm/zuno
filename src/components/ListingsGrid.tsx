@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
+import FavoriteButton from "./FavoriteButton";
 
 interface Listing {
   id: string;
@@ -18,12 +19,16 @@ interface Listing {
 export default function ListingsGrid() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
     fetch("/api/listings")
       .then((r) => r.json())
       .then((d) => setListings(d.listings || []))
       .finally(() => setLoading(false));
+    fetch("/api/favorites/ids")
+      .then((r) => r.json())
+      .then((d) => setFavorites(d.ids || []));
   }, []);
 
   return (
@@ -35,7 +40,7 @@ export default function ListingsGrid() {
         transition={{ duration: 0.5 }}
         className="mb-10"
       >
-        <span className="text-xs font-bold uppercase tracking-wider text-[var(--zuno-orange)]">
+        <span className="text-xs font-bold uppercase tracking-wider text-[var(--zuno-green)]">
           Recentes
         </span>
         <h2 className="text-2xl md:text-3xl font-bold text-[var(--zuno-navy-dark)] mt-1">
@@ -80,16 +85,18 @@ export default function ListingsGrid() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[var(--zuno-navy)]/10 to-[var(--zuno-orange)]/10" />
+                    <div className="w-full h-full bg-gradient-to-br from-[var(--zuno-navy)]/10 to-[var(--zuno-green)]/10" />
                   )}
                   {item.isFeatured && (
-                    <span className="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full text-white z-10 bg-[var(--zuno-orange)]">
+                    <span className="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full text-white z-10 bg-[var(--zuno-gold)]">
                       Destaque
                     </span>
                   )}
-                  <button className="absolute top-2.5 right-2.5 z-10 bg-white/90 backdrop-blur p-1.5 rounded-full hover:bg-white transition-colors">
-                    <Heart size={15} className="text-gray-500" />
-                  </button>
+                  <FavoriteButton
+                    listingId={item.id}
+                    initialFavorited={favorites.includes(item.id)}
+                    className="absolute top-2.5 right-2.5 z-10"
+                  />
                 </div>
 
                 <div className="p-3.5">

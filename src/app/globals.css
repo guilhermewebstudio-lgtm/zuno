@@ -8,7 +8,7 @@
   --zuno-navy-dark: #0a1c3a;
   --zuno-orange: #e2822f;
   --zuno-gold: #d9a13d;
-  --zuno-green: #2f8f5b;
+  --zuno-green: #14926b;
   --zuno-purple: #6d54b8;
   --zuno-ink: #0a1a3a;
 }
@@ -32,7 +32,7 @@ body {
 }
 
 .zuno-gradient-text {
-  background: linear-gradient(90deg, #ffffff, var(--zuno-gold));
+  background: linear-gradient(90deg, #ffffff, var(--zuno-green));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

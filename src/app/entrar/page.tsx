@@ -41,7 +41,7 @@ export default function EntrarPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[var(--zuno-navy)] px-4 py-12 relative overflow-hidden">
-      <div className="zuno-blob zuno-float w-96 h-96 bg-[var(--zuno-orange)] -top-20 right-[5%]" aria-hidden />
+      <div className="zuno-blob zuno-float w-96 h-96 bg-[var(--zuno-green)] -top-20 right-[5%]" aria-hidden />
       <div className="zuno-blob zuno-float-slow w-80 h-80 bg-white bottom-10 left-[5%]" aria-hidden />
 
       <motion.div

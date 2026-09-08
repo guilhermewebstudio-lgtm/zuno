@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Heart, ArrowLeft } from "lucide-react";
+import { MapPin, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import FavoriteButton from "@/components/FavoriteButton";
 
 interface Listing {
   id: string;
@@ -37,6 +38,7 @@ export default function CategoriaPage() {
   const slug = params.slug as string;
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
     fetch(`/api/listings?category=${slug}`)
@@ -44,6 +46,12 @@ export default function CategoriaPage() {
       .then((d) => setListings(d.listings || []))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  useEffect(() => {
+    fetch("/api/favorites/ids")
+      .then((r) => r.json())
+      .then((d) => setFavorites(d.ids || []));
+  }, []);
 
   const label = CATEGORY_LABELS[slug] || slug;
 
@@ -107,9 +115,11 @@ export default function CategoriaPage() {
                         Destaque
                       </span>
                     )}
-                    <button className="absolute top-2.5 right-2.5 z-10 bg-white/90 backdrop-blur p-1.5 rounded-full hover:bg-white transition-colors">
-                      <Heart size={15} className="text-gray-500" />
-                    </button>
+                    <FavoriteButton
+                      listingId={item.id}
+                      initialFavorited={favorites.includes(item.id)}
+                      className="absolute top-2.5 right-2.5 z-10"
+                    />
                   </div>
                   <div className="p-3.5">
                     <p className="font-semibold text-sm text-[var(--zuno-navy-dark)] truncate">{item.title}</p>

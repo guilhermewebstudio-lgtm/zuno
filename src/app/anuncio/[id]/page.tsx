@@ -71,7 +71,7 @@ export default function AnuncioPage() {
               <div className="w-full h-full flex items-center justify-center text-gray-300">Sem foto</div>
             )}
             {listing.isFeatured && (
-              <span className="absolute top-3 left-3 flex items-center gap-1 bg-[var(--zuno-orange)] text-white text-xs font-bold px-3 py-1 rounded-full">
+              <span className="absolute top-3 left-3 flex items-center gap-1 bg-[var(--zuno-gold)] text-white text-xs font-bold px-3 py-1 rounded-full">
                 <Star size={12} /> Destaque
               </span>
             )}
@@ -133,7 +133,7 @@ export default function AnuncioPage() {
               <motion.div
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
-                className="mt-6 w-full flex items-center justify-center gap-2 bg-[var(--zuno-orange)] text-white font-semibold py-3.5 rounded-xl text-sm cursor-pointer"
+                className="mt-6 w-full flex items-center justify-center gap-2 bg-[var(--zuno-green)] text-white font-semibold py-3.5 rounded-xl text-sm cursor-pointer"
               >
                 <Lock size={16} />
                 Entra para contactar o vendedor

@@ -13,6 +13,32 @@ const QUICK_CATEGORIES = [
   { name: "Veículos", slug: "veiculos", icon: Car },
 ];
 
+function IconLink({
+  href,
+  icon: Icon,
+  title,
+  active = false,
+}: {
+  href: string;
+  icon: typeof Heart;
+  title: string;
+  active?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      title={title}
+      className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+        active
+          ? "bg-[var(--zuno-navy)]/10 text-[var(--zuno-navy)]"
+          : "text-gray-500 hover:bg-gray-100 hover:text-[var(--zuno-navy-dark)]"
+      }`}
+    >
+      <Icon size={19} />
+    </Link>
+  );
+}
+
 export default function Header() {
   const { user, logout } = useAuth();
 
@@ -44,55 +70,40 @@ export default function Header() {
           />
         </div>
 
-        <div className="flex items-center gap-1 md:gap-3 ml-auto">
-          <button className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]">
-            <Heart size={20} />
-          </button>
-          <button className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]">
-            <MessageCircle size={20} />
-          </button>
+        <div className="flex items-center gap-1 md:gap-1.5 ml-auto bg-gray-50 md:bg-transparent rounded-full p-1 md:p-0">
+          <IconLink href="/favoritos" icon={Heart} title="Favoritos" />
+          <IconLink href="/perfil" icon={MessageCircle} title="Mensagens" />
+
           {user?.isAdmin && (
             <Link
               href="/admin"
-              className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-orange)]"
               title="Painel de administração"
+              className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-[var(--zuno-green)] hover:bg-[var(--zuno-green)]/10 transition-colors"
             >
-              <ShieldCheck size={20} />
+              <ShieldCheck size={19} />
             </Link>
           )}
 
           {user ? (
             <>
-              <Link
-                href="/perfil"
-                className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
-                title="O meu perfil"
-              >
-                <User size={20} />
-              </Link>
+              <IconLink href="/perfil" icon={User} title="O meu perfil" />
               <button
                 onClick={logout}
-                className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
                 title="Sair"
+                className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-gray-500 hover:bg-gray-100 hover:text-red-500 transition-colors"
               >
-                <LogOut size={20} />
+                <LogOut size={19} />
               </button>
             </>
           ) : (
-            <Link
-              href="/entrar"
-              className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
-              title="Entrar"
-            >
-              <User size={20} />
-            </Link>
+            <IconLink href="/entrar" icon={User} title="Entrar" />
           )}
 
           <Link href="/vender">
             <motion.span
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-1.5 bg-[var(--zuno-navy)] text-white px-4 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-blue-900/10 cursor-pointer"
+              className="flex items-center gap-1.5 bg-[var(--zuno-navy)] text-white px-4 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-blue-900/10 cursor-pointer ml-1"
             >
               <Plus size={17} strokeWidth={2.5} />
               <span className="hidden sm:inline">Vender</span>

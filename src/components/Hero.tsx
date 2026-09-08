@@ -23,7 +23,7 @@ export default function Hero() {
       />
 
       <div
-        className="zuno-blob zuno-float w-96 h-96 bg-[var(--zuno-orange)] -top-24 left-[2%]"
+        className="zuno-blob zuno-float w-96 h-96 bg-[var(--zuno-green)] -top-24 left-[2%]"
         aria-hidden
       />
       <div
@@ -77,7 +77,7 @@ export default function Hero() {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="bg-[var(--zuno-orange)] text-white font-semibold px-5 md:px-6 py-3 rounded-full text-sm md:text-base whitespace-nowrap"
+              className="bg-[var(--zuno-green)] text-white font-semibold px-5 md:px-6 py-3 rounded-full text-sm md:text-base whitespace-nowrap"
             >
               Pesquisar
             </motion.button>
@@ -109,15 +109,15 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-3 text-white/70 text-sm"
           >
             <div className="flex items-center gap-2">
-              <ShieldCheck size={16} className="text-[var(--zuno-orange)]" />
+              <ShieldCheck size={16} className="text-[var(--zuno-green)]" />
               Compra segura
             </div>
             <div className="flex items-center gap-2">
-              <Zap size={16} className="text-[var(--zuno-orange)]" />
+              <Zap size={16} className="text-[var(--zuno-green)]" />
               Anúncios em segundos
             </div>
             <div className="flex items-center gap-2">
-              <TrendingUp size={16} className="text-[var(--zuno-orange)]" />
+              <TrendingUp size={16} className="text-[var(--zuno-green)]" />
               A crescer em Portugal
             </div>
           </motion.div>
@@ -149,7 +149,7 @@ export default function Hero() {
                 zIndex: 3 - i,
               }}
             >
-              <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-[var(--zuno-navy)]/10 to-[var(--zuno-orange)]/15 mb-3" />
+              <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-[var(--zuno-navy)]/10 to-[var(--zuno-green)]/15 mb-3" />
               <p className="text-xs font-bold text-[var(--zuno-navy-dark)]">{card.title}</p>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-sm font-extrabold text-[var(--zuno-navy)]">{card.price}</span>

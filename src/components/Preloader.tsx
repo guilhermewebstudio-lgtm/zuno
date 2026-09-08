@@ -30,7 +30,7 @@ export default function Preloader() {
           className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--zuno-navy-dark)] overflow-hidden"
         >
           <motion.div
-            className="zuno-blob w-96 h-96 bg-[var(--zuno-gold)]"
+            className="zuno-blob w-96 h-96 bg-[var(--zuno-green)]"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1.2, opacity: 0.25 }}
             transition={{ duration: 1.8, ease: "easeOut" }}
@@ -62,7 +62,7 @@ export default function Preloader() {
               initial={{ scaleX: 0, opacity: 0 }}
               animate={{ scaleX: 1, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.9 }}
-              className="h-[2px] w-24 mt-4 bg-gradient-to-r from-transparent via-[var(--zuno-gold)] to-transparent"
+              className="h-[2px] w-24 mt-4 bg-gradient-to-r from-transparent via-[var(--zuno-green)] to-transparent"
             />
           </motion.div>
         </motion.div>

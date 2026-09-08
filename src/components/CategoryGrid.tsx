@@ -19,17 +19,17 @@ import Link from "next/link";
 
 const categories = [
   { name: "Tecnologia", slug: "tecnologia", icon: Smartphone, color: "var(--zuno-navy)" },
-  { name: "Imóveis", slug: "imoveis", icon: Home, color: "var(--zuno-gold)" },
+  { name: "Imóveis", slug: "imoveis", icon: Home, color: "var(--zuno-green)" },
   { name: "Compras", slug: "compras", icon: ShoppingBag, color: "var(--zuno-purple)" },
   { name: "Aulas", slug: "aulas", icon: GraduationCap, color: "var(--zuno-green)" },
   { name: "Moda", slug: "moda", icon: Shirt, color: "var(--zuno-purple)" },
   { name: "Brinquedos", slug: "brinquedos", icon: Blocks, color: "var(--zuno-green)" },
   { name: "Informática", slug: "informatica", icon: Laptop, color: "var(--zuno-navy)" },
-  { name: "Veículos", slug: "veiculos", icon: Car, color: "var(--zuno-gold)" },
+  { name: "Veículos", slug: "veiculos", icon: Car, color: "var(--zuno-green)" },
   { name: "Casa", slug: "casa", icon: Sofa, color: "var(--zuno-navy)" },
   { name: "Desporto", slug: "desporto", icon: Dumbbell, color: "var(--zuno-green)" },
   { name: "Instrumentos", slug: "instrumentos", icon: Guitar, color: "var(--zuno-purple)" },
-  { name: "Serviços", slug: "servicos", icon: Wrench, color: "var(--zuno-gold)" },
+  { name: "Serviços", slug: "servicos", icon: Wrench, color: "var(--zuno-green)" },
 ];
 
 export default function CategoryGrid() {
@@ -43,7 +43,7 @@ export default function CategoryGrid() {
         className="mb-10 flex items-end justify-between"
       >
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[var(--zuno-orange)]">
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--zuno-green)]">
             Categorias
           </span>
           <h2 className="text-2xl md:text-3xl font-bold text-[var(--zuno-navy-dark)] mt-1">
