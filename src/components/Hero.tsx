@@ -7,15 +7,11 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-[var(--zuno-navy)]">
       <div
-        className="zuno-blob w-72 h-72 bg-[var(--zuno-orange)] -top-10 left-[10%]"
+        className="zuno-blob zuno-float w-96 h-96 bg-[var(--zuno-orange)] -top-16 left-[8%]"
         aria-hidden
       />
       <div
-        className="zuno-blob w-80 h-80 bg-[var(--zuno-purple)] top-10 right-[5%]"
-        aria-hidden
-      />
-      <div
-        className="zuno-blob w-64 h-64 bg-[var(--zuno-green)] bottom-[-4rem] left-[40%]"
+        className="zuno-blob zuno-float-slow w-80 h-80 bg-white top-10 right-[8%]"
         aria-hidden
       />
 
@@ -36,7 +32,7 @@ export default function Hero() {
           className="text-4xl md:text-6xl font-extrabold text-white leading-tight"
         >
           Compra e vende{" "}
-          <span className="zuno-gradient-text">tudo perto de ti</span>
+          <span className="zuno-gradient-text">tudo perto de ti</span>.
         </motion.h1>
 
         <motion.p

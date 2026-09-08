@@ -6,12 +6,12 @@ import { Heart, MapPin } from "lucide-react";
 const mockListings = [
   { title: "iPhone 13 Pro 256GB", price: "€520", city: "Lisboa", tag: "Destaque", color: "var(--zuno-orange)" },
   { title: "Apartamento T2 - Alvalade", price: "€1200/mês", city: "Lisboa", tag: "Destaque", color: "var(--zuno-orange)" },
-  { title: "Aulas de Inglês Online", price: "€15/hora", city: "Remoto", tag: "Aulas", color: "var(--zuno-green)" },
-  { title: "Bicicleta BTT Trek", price: "€350", city: "Porto", tag: "Desporto", color: "var(--zuno-green)" },
-  { title: "Sofá 3 lugares cinza", price: "€180", city: "Cascais", tag: "Casa", color: "var(--zuno-purple)" },
-  { title: "PlayStation 5 + 2 comandos", price: "€430", city: "Sintra", tag: "Tecnologia", color: "var(--zuno-orange)" },
-  { title: "Casaco de inverno North Face", price: "€65", city: "Braga", tag: "Moda", color: "var(--zuno-purple)" },
-  { title: "Cadeira de escritório ergonómica", price: "€90", city: "Coimbra", tag: "Casa", color: "var(--zuno-purple)" },
+  { title: "Aulas de Inglês Online", price: "€15/hora", city: "Remoto", tag: "Aulas", color: "var(--zuno-navy)" },
+  { title: "Bicicleta BTT Trek", price: "€350", city: "Porto", tag: "Desporto", color: "var(--zuno-navy)" },
+  { title: "Sofá 3 lugares cinza", price: "€180", city: "Cascais", tag: "Casa", color: "var(--zuno-navy)" },
+  { title: "PlayStation 5 + 2 comandos", price: "€430", city: "Sintra", tag: "Destaque", color: "var(--zuno-orange)" },
+  { title: "Casaco de inverno North Face", price: "€65", city: "Braga", tag: "Moda", color: "var(--zuno-navy)" },
+  { title: "Cadeira de escritório ergonómica", price: "€90", city: "Coimbra", tag: "Casa", color: "var(--zuno-navy)" },
 ];
 
 export default function ListingsGrid() {

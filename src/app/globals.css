@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f8fa;
+  --background: #f6f5f1;
   --foreground: #12203f;
 
   --zuno-navy: #123a8c;
@@ -9,6 +9,7 @@
   --zuno-orange: #f5891f;
   --zuno-green: #34a853;
   --zuno-purple: #7c4fd6;
+  --zuno-ink: #0a1a3a;
 }
 
 @theme inline {
@@ -29,7 +30,7 @@ body {
 }
 
 .zuno-gradient-text {
-  background: linear-gradient(90deg, var(--zuno-orange), var(--zuno-purple), var(--zuno-green));
+  background: linear-gradient(90deg, #ffffff, var(--zuno-orange));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -38,7 +39,20 @@ body {
 .zuno-blob {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(60px);
-  opacity: 0.35;
+  filter: blur(70px);
+  opacity: 0.25;
   pointer-events: none;
+}
+
+@keyframes zuno-float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-18px) translateX(10px); }
+}
+
+.zuno-float {
+  animation: zuno-float 7s ease-in-out infinite;
+}
+
+.zuno-float-slow {
+  animation: zuno-float 11s ease-in-out infinite;
 }
