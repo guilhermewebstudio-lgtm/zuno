@@ -72,14 +72,16 @@ export default function Header() {
             </Link>
           )}
 
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-1.5 bg-[var(--zuno-navy)] text-white px-4 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-blue-900/10"
-          >
-            <Plus size={17} strokeWidth={2.5} />
-            <span className="hidden sm:inline">Vender</span>
-          </motion.button>
+          <Link href="/vender">
+            <motion.span
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-1.5 bg-[var(--zuno-navy)] text-white px-4 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-blue-900/10 cursor-pointer"
+            >
+              <Plus size={17} strokeWidth={2.5} />
+              <span className="hidden sm:inline">Vender</span>
+            </motion.span>
+          </Link>
         </div>
       </div>
 
