@@ -7,7 +7,7 @@ const DEFAULT_CATEGORIES = [
   { namePt: "Compras", nameEn: "Shopping", slug: "compras" },
   { namePt: "Aulas", nameEn: "Classes", slug: "aulas" },
   { namePt: "Moda", nameEn: "Fashion", slug: "moda" },
-  { namePt: "Bebés", nameEn: "Baby & Kids", slug: "bebes" },
+  { namePt: "Brinquedos", nameEn: "Toys", slug: "brinquedos" },
   { namePt: "Informática", nameEn: "Computers", slug: "informatica" },
   { namePt: "Veículos", nameEn: "Vehicles", slug: "veiculos" },
   { namePt: "Casa", nameEn: "Home", slug: "casa" },
@@ -24,6 +24,15 @@ export async function GET() {
       data: DEFAULT_CATEGORIES,
       skipDuplicates: true,
     });
+  } else {
+    // Migra a antiga categoria "Bebés" (slug: bebes) para "Brinquedos"
+    const old = await prisma.category.findUnique({ where: { slug: "bebes" } });
+    if (old) {
+      await prisma.category.update({
+        where: { slug: "bebes" },
+        data: { namePt: "Brinquedos", nameEn: "Toys", slug: "brinquedos" },
+      });
+    }
   }
 
   const categories = await prisma.category.findMany({

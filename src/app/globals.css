@@ -58,3 +58,11 @@ body {
 .zuno-float-slow {
   animation: zuno-float 11s ease-in-out infinite;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

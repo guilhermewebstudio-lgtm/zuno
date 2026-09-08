@@ -2,9 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Heart, MessageCircle, Plus, User, LogOut, ShieldCheck } from "lucide-react";
+import { Search, Heart, MessageCircle, Plus, User, LogOut, ShieldCheck, Smartphone, Home, Shirt, Car } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+
+const QUICK_CATEGORIES = [
+  { name: "Tecnologia", slug: "tecnologia", icon: Smartphone },
+  { name: "Imóveis", slug: "imoveis", icon: Home },
+  { name: "Moda", slug: "moda", icon: Shirt },
+  { name: "Veículos", slug: "veiculos", icon: Car },
+];
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -17,7 +24,7 @@ export default function Header() {
       className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-black/5 shadow-sm"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center gap-4">
-        <div className="flex items-center gap-2 shrink-0">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
             src="/logo/zuno-logo.png"
             alt="Zuno"
@@ -26,7 +33,7 @@ export default function Header() {
             className="h-9 w-auto object-contain"
             priority
           />
-        </div>
+        </Link>
 
         <div className="hidden md:flex flex-1 max-w-xl items-center gap-2 bg-gray-100 rounded-full px-4 py-2.5 focus-within:ring-2 ring-[var(--zuno-navy)] transition-all">
           <Search size={18} className="text-gray-400 shrink-0" />
@@ -102,6 +109,21 @@ export default function Header() {
             placeholder="Procura em Zuno..."
             className="bg-transparent outline-none text-sm w-full placeholder:text-gray-400"
           />
+        </div>
+      </div>
+
+      <div className="hidden md:block border-t border-black/5 bg-white/60">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center gap-1 overflow-x-auto no-scrollbar">
+          {QUICK_CATEGORIES.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/categoria/${cat.slug}`}
+              className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-[var(--zuno-navy)] px-3 py-2.5 whitespace-nowrap transition-colors"
+            >
+              <cat.icon size={14} />
+              {cat.name}
+            </Link>
+          ))}
         </div>
       </div>
     </motion.header>
