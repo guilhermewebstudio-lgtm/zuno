@@ -55,13 +55,22 @@ export default function Header() {
           )}
 
           {user ? (
-            <button
-              onClick={logout}
-              className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
-              title="Sair"
-            >
-              <LogOut size={20} />
-            </button>
+            <>
+              <Link
+                href="/perfil"
+                className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
+                title="O meu perfil"
+              >
+                <User size={20} />
+              </Link>
+              <button
+                onClick={logout}
+                className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
+                title="Sair"
+              >
+                <LogOut size={20} />
+              </button>
+            </>
           ) : (
             <Link
               href="/entrar"

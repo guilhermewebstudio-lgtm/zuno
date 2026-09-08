@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f5f1;
-  --foreground: #12203f;
+  --background: #f5f4f0;
+  --foreground: #16223f;
 
-  --zuno-navy: #123a8c;
-  --zuno-navy-dark: #0c2a66;
-  --zuno-orange: #f5891f;
-  --zuno-green: #34a853;
-  --zuno-purple: #7c4fd6;
+  --zuno-navy: #0f2951;
+  --zuno-navy-dark: #0a1c3a;
+  --zuno-orange: #e2822f;
+  --zuno-gold: #d9a13d;
+  --zuno-green: #2f8f5b;
+  --zuno-purple: #6d54b8;
   --zuno-ink: #0a1a3a;
 }
 
@@ -18,6 +19,7 @@
   --color-zuno-navy: var(--zuno-navy);
   --color-zuno-navy-dark: var(--zuno-navy-dark);
   --color-zuno-orange: var(--zuno-orange);
+  --color-zuno-gold: var(--zuno-gold);
   --color-zuno-green: var(--zuno-green);
   --color-zuno-purple: var(--zuno-purple);
   --font-sans: var(--font-poppins);
@@ -30,7 +32,7 @@ body {
 }
 
 .zuno-gradient-text {
-  background: linear-gradient(90deg, #ffffff, var(--zuno-orange));
+  background: linear-gradient(90deg, #ffffff, var(--zuno-gold));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -40,7 +42,7 @@ body {
   position: absolute;
   border-radius: 9999px;
   filter: blur(70px);
-  opacity: 0.25;
+  opacity: 0.22;
   pointer-events: none;
 }
 

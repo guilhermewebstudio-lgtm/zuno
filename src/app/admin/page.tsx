@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import {
   Users,
@@ -13,6 +14,7 @@ import {
   ShieldCheck,
   Trash2,
   CheckCircle2,
+  ArrowLeft,
 } from "lucide-react";
 
 interface Stats {
@@ -125,17 +127,26 @@ export default function AdminPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[var(--background)] px-4 md:px-8 py-10">
+    <main className="min-h-screen bg-gradient-to-b from-[var(--zuno-navy-dark)] via-[var(--background)] to-[var(--background)] px-4 md:px-8 py-10">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 mb-8"
+          className="flex items-center justify-between mb-8"
         >
-          <ShieldCheck className="text-[var(--zuno-navy)]" size={26} />
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--zuno-navy-dark)]">
-            Painel de administração
-          </h1>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="text-white" size={26} />
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
+              Painel de administração
+            </h1>
+          </div>
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 text-sm font-semibold text-white/80 hover:text-white bg-white/10 px-4 py-2 rounded-full transition-colors"
+          >
+            <ArrowLeft size={15} />
+            Voltar à loja
+          </Link>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">

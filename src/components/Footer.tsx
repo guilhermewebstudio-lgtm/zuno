@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PaymentBadges from "./PaymentBadges";
 
 export default function Footer() {
   return (
@@ -12,7 +13,8 @@ export default function Footer() {
             height={70}
             className="h-8 w-auto object-contain brightness-0 invert opacity-90"
           />
-          <p className="text-sm mt-3">O teu mercado online em Portugal.</p>
+          <p className="text-sm mt-3 mb-4">O teu mercado online em Portugal.</p>
+          <PaymentBadges />
         </div>
         <div>
           <h4 className="text-white font-semibold text-sm mb-3">Zuno</h4>

@@ -18,17 +18,17 @@ import {
 
 const categories = [
   { name: "Tecnologia", icon: Smartphone, color: "var(--zuno-navy)" },
-  { name: "Imóveis", icon: Home, color: "var(--zuno-orange)" },
-  { name: "Compras", icon: ShoppingBag, color: "var(--zuno-navy)" },
-  { name: "Aulas", icon: GraduationCap, color: "var(--zuno-orange)" },
-  { name: "Moda", icon: Shirt, color: "var(--zuno-navy)" },
-  { name: "Bebés", icon: Baby, color: "var(--zuno-orange)" },
+  { name: "Imóveis", icon: Home, color: "var(--zuno-gold)" },
+  { name: "Compras", icon: ShoppingBag, color: "var(--zuno-purple)" },
+  { name: "Aulas", icon: GraduationCap, color: "var(--zuno-green)" },
+  { name: "Moda", icon: Shirt, color: "var(--zuno-purple)" },
+  { name: "Bebés", icon: Baby, color: "var(--zuno-green)" },
   { name: "Informática", icon: Laptop, color: "var(--zuno-navy)" },
-  { name: "Veículos", icon: Car, color: "var(--zuno-orange)" },
+  { name: "Veículos", icon: Car, color: "var(--zuno-gold)" },
   { name: "Casa", icon: Sofa, color: "var(--zuno-navy)" },
-  { name: "Desporto", icon: Dumbbell, color: "var(--zuno-orange)" },
-  { name: "Instrumentos", icon: Guitar, color: "var(--zuno-navy)" },
-  { name: "Serviços", icon: Wrench, color: "var(--zuno-orange)" },
+  { name: "Desporto", icon: Dumbbell, color: "var(--zuno-green)" },
+  { name: "Instrumentos", icon: Guitar, color: "var(--zuno-purple)" },
+  { name: "Serviços", icon: Wrench, color: "var(--zuno-gold)" },
 ];
 
 export default function CategoryGrid() {
