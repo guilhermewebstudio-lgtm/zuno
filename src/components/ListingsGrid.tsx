@@ -33,12 +33,15 @@ export default function ListingsGrid() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.5 }}
-        className="mb-8"
+        className="mb-10"
       >
-        <h2 className="text-2xl md:text-3xl font-bold text-[var(--zuno-navy-dark)]">
+        <span className="text-xs font-bold uppercase tracking-wider text-[var(--zuno-orange)]">
+          Recentes
+        </span>
+        <h2 className="text-2xl md:text-3xl font-bold text-[var(--zuno-navy-dark)] mt-1">
           Anúncios recentes
         </h2>
-        <p className="text-gray-500 text-sm md:text-base mt-1">
+        <p className="text-gray-500 text-sm md:text-base mt-1.5">
           Os anúncios mais recentes em todo o país.
         </p>
       </motion.div>
