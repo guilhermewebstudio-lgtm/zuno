@@ -1,10 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Search, Heart, MessageCircle, Plus, User } from "lucide-react";
+import Link from "next/link";
+import { Search, Heart, MessageCircle, Plus, User, LogOut, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
+  const { user, logout } = useAuth();
+
   return (
     <motion.header
       initial={{ y: -40, opacity: 0 }}
@@ -40,9 +44,34 @@ export default function Header() {
           <button className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]">
             <MessageCircle size={20} />
           </button>
-          <button className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]">
-            <User size={20} />
-          </button>
+          {user?.isAdmin && (
+            <Link
+              href="/admin"
+              className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-orange)]"
+              title="Painel de administração"
+            >
+              <ShieldCheck size={20} />
+            </Link>
+          )}
+
+          {user ? (
+            <button
+              onClick={logout}
+              className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
+              title="Sair"
+            >
+              <LogOut size={20} />
+            </button>
+          ) : (
+            <Link
+              href="/entrar"
+              className="hidden sm:flex p-2.5 rounded-full hover:bg-gray-100 transition-colors text-[var(--zuno-navy-dark)]"
+              title="Entrar"
+            >
+              <User size={20} />
+            </Link>
+          )}
+
           <motion.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
