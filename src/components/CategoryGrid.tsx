@@ -17,19 +17,21 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// Cores vivas e variadas (inspirado no estilo de categorias do OLX),
+// mantendo os tons da marca Zuno como base.
 const categories = [
-  { name: "Tecnologia", slug: "tecnologia", icon: Smartphone, color: "var(--zuno-navy)" },
-  { name: "Imóveis", slug: "imoveis", icon: Home, color: "var(--zuno-green)" },
-  { name: "Compras", slug: "compras", icon: ShoppingBag, color: "var(--zuno-purple)" },
-  { name: "Aulas", slug: "aulas", icon: GraduationCap, color: "var(--zuno-green)" },
-  { name: "Moda", slug: "moda", icon: Shirt, color: "var(--zuno-purple)" },
-  { name: "Brinquedos", slug: "brinquedos", icon: Blocks, color: "var(--zuno-green)" },
-  { name: "Informática", slug: "informatica", icon: Laptop, color: "var(--zuno-navy)" },
-  { name: "Veículos", slug: "veiculos", icon: Car, color: "var(--zuno-green)" },
-  { name: "Casa", slug: "casa", icon: Sofa, color: "var(--zuno-navy)" },
-  { name: "Desporto", slug: "desporto", icon: Dumbbell, color: "var(--zuno-green)" },
-  { name: "Instrumentos", slug: "instrumentos", icon: Guitar, color: "var(--zuno-purple)" },
-  { name: "Serviços", slug: "servicos", icon: Wrench, color: "var(--zuno-green)" },
+  { name: "Tecnologia", slug: "tecnologia", icon: Smartphone, color: "#123a8c" },
+  { name: "Imóveis", slug: "imoveis", icon: Home, color: "#d9a13d" },
+  { name: "Compras", slug: "compras", icon: ShoppingBag, color: "#6d54b8" },
+  { name: "Aulas", slug: "aulas", icon: GraduationCap, color: "#14926b" },
+  { name: "Moda", slug: "moda", icon: Shirt, color: "#e05a7a" },
+  { name: "Brinquedos", slug: "brinquedos", icon: Blocks, color: "#2fa4c9" },
+  { name: "Informática", slug: "informatica", icon: Laptop, color: "#0f2951" },
+  { name: "Veículos", slug: "veiculos", icon: Car, color: "#e2822f" },
+  { name: "Casa", slug: "casa", icon: Sofa, color: "#7a8c3a" },
+  { name: "Desporto", slug: "desporto", icon: Dumbbell, color: "#14926b" },
+  { name: "Instrumentos", slug: "instrumentos", icon: Guitar, color: "#6d54b8" },
+  { name: "Serviços", slug: "servicos", icon: Wrench, color: "#c9762f" },
 ];
 
 export default function CategoryGrid() {
@@ -55,7 +57,7 @@ export default function CategoryGrid() {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 md:gap-6">
         {categories.map((cat, i) => (
           <motion.div
             key={cat.name}
@@ -66,16 +68,16 @@ export default function CategoryGrid() {
           >
             <Link href={`/categoria/${cat.slug}`}>
               <motion.div
-                whileHover={{ y: -5 }}
-                className="group flex flex-col items-center gap-3 bg-white rounded-2xl p-4 md:p-5 border border-black/[0.04] shadow-[0_1px_3px_rgba(18,32,63,0.06)] hover:shadow-[0_12px_24px_rgba(18,32,63,0.1)] transition-shadow cursor-pointer"
+                whileHover={{ y: -4 }}
+                className="group flex flex-col items-center gap-2.5 cursor-pointer"
               >
                 <div
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
-                  style={{ backgroundColor: `${cat.color}14` }}
+                  className="w-16 h-16 md:w-[4.5rem] md:h-[4.5rem] rounded-full flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-[1.08]"
+                  style={{ backgroundColor: cat.color }}
                 >
-                  <cat.icon size={23} style={{ color: cat.color }} strokeWidth={2} />
+                  <cat.icon size={28} className="text-white" strokeWidth={1.8} />
                 </div>
-                <span className="text-xs md:text-sm font-semibold text-[var(--zuno-navy-dark)] text-center">
+                <span className="text-xs md:text-sm font-semibold text-[var(--zuno-navy-dark)] text-center leading-tight">
                   {cat.name}
                 </span>
               </motion.div>

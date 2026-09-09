@@ -31,19 +31,37 @@ async function sendBrevoEmail(to: string, name: string, subject: string, htmlCon
 }
 
 function buildEmailHtml(userName: string, subject: string, message: string) {
+  const logoUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://zuno-wine.vercel.app"}/logo/zuno-logo.png`;
+
   return `
-  <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #f5f4f0; padding: 24px;">
-    <div style="background: #0f2951; padding: 24px; border-radius: 16px 16px 0 0; text-align: center;">
-      <h1 style="color: #ffffff; margin: 0; font-size: 22px;">Zuno</h1>
+  <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #f5f4f0; padding: 32px 16px;">
+    <div style="text-align: center; margin-bottom: 20px;">
+      <img src="${logoUrl}" alt="Zuno" width="120" style="display: inline-block;" />
     </div>
-    <div style="background: #ffffff; padding: 32px; border-radius: 0 0 16px 16px;">
-      <p style="color: #16223f; font-size: 15px;">Olá ${userName},</p>
-      <h2 style="color: #0f2951; font-size: 18px;">${subject}</h2>
-      <div style="color: #444; font-size: 14px; line-height: 1.6; white-space: pre-line;">${message}</div>
-      <p style="color: #999; font-size: 12px; margin-top: 32px;">
-        Estás a receber este email porque tens conta no Zuno.
-      </p>
+
+    <div style="background: linear-gradient(135deg, #0f2951, #0a1c3a); padding: 36px 32px; border-radius: 20px 20px 0 0; text-align: center;">
+      <span style="display: inline-block; background: rgba(255,255,255,0.1); color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 999px;">
+        Zuno &middot; Mercado Online
+      </span>
+      <h1 style="color: #ffffff; margin: 18px 0 0; font-size: 24px; line-height: 1.3;">${subject}</h1>
     </div>
+
+    <div style="background: #ffffff; padding: 36px 32px; border-radius: 0 0 20px 20px; box-shadow: 0 8px 24px rgba(15,41,81,0.08);">
+      <p style="color: #16223f; font-size: 15px; margin-top: 0;">Olá ${userName},</p>
+      <div style="color: #444; font-size: 15px; line-height: 1.7; white-space: pre-line;">${message}</div>
+
+      <div style="text-align: center; margin-top: 32px;">
+        <a href="${process.env.NEXT_PUBLIC_SITE_URL || "https://zuno-wine.vercel.app"}"
+           style="display: inline-block; background: #14926b; color: #ffffff; font-weight: 700; font-size: 14px; text-decoration: none; padding: 13px 32px; border-radius: 999px;">
+          Ver no Zuno
+        </a>
+      </div>
+    </div>
+
+    <p style="color: #999; font-size: 12px; margin-top: 24px; text-align: center; line-height: 1.6;">
+      Estás a receber este email porque tens conta no Zuno.<br />
+      Zuno &middot; O teu mercado online em Portugal
+    </p>
   </div>`;
 }
 
