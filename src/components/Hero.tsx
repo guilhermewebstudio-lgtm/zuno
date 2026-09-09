@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search, ShieldCheck, Zap, TrendingUp } from "lucide-react";
 
@@ -10,6 +12,15 @@ const previewCards = [
 ];
 
 export default function Hero() {
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = query.trim();
+    if (trimmed) router.push(`/pesquisa?q=${encodeURIComponent(trimmed)}`);
+  }
+
   return (
     <section className="relative overflow-hidden bg-[var(--zuno-navy)]">
       <div
@@ -62,7 +73,8 @@ export default function Hero() {
             só sítio, feito para Portugal.
           </motion.p>
 
-          <motion.div
+          <motion.form
+            onSubmit={handleSearch}
             initial={{ opacity: 0, y: 18, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -71,17 +83,20 @@ export default function Hero() {
             <Search size={20} className="text-gray-400 shrink-0" />
             <input
               type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="O que procuras hoje?"
               className="flex-1 outline-none text-sm md:text-base py-2 placeholder:text-gray-400 min-w-0"
             />
             <motion.button
+              type="submit"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="bg-[var(--zuno-green)] text-white font-semibold px-5 md:px-6 py-3 rounded-full text-sm md:text-base whitespace-nowrap"
             >
               Pesquisar
             </motion.button>
-          </motion.div>
+          </motion.form>
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -92,12 +107,14 @@ export default function Hero() {
             <span>Populares:</span>
             {["iPhone", "Apartamento T2", "Bicicleta", "Aulas de inglês", "PlayStation 5"].map(
               (tag) => (
-                <span
+                <button
                   key={tag}
+                  type="button"
+                  onClick={() => router.push(`/pesquisa?q=${encodeURIComponent(tag)}`)}
                   className="bg-white/10 hover:bg-white/20 transition-colors px-3 py-1 rounded-full cursor-pointer"
                 >
                   {tag}
-                </span>
+                </button>
               )
             )}
           </motion.div>

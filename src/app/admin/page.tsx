@@ -22,11 +22,14 @@ import {
 import {
   ResponsiveContainer,
   AreaChart,
+  BarChart,
+  Bar,
   Area,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
+  Cell,
 } from "recharts";
 
 interface Stats {
@@ -264,14 +267,8 @@ export default function AdminPage() {
             <p className="text-xs text-gray-400 mb-6">Euros recebidos por dia nos últimos 14 dias</p>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats?.daily || []}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#14926b" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#14926b" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                <BarChart data={stats?.daily || []}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" vertical={false} />
                   <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#999" }} />
                   <YAxis
                     allowDecimals={false}
@@ -279,8 +276,15 @@ export default function AdminPage() {
                     tickFormatter={(v) => `€${v}`}
                   />
                   <Tooltip formatter={(value) => [`€${Number(value).toFixed(2)}`, "Receita"]} />
-                  <Area type="monotone" dataKey="receita" stroke="#14926b" fill="url(#colorRevenue)" strokeWidth={2} />
-                </AreaChart>
+                  <Bar dataKey="receita" radius={[6, 6, 0, 0]} maxBarSize={28}>
+                    {(stats?.daily || []).map((entry, i) => (
+                      <Cell
+                        key={i}
+                        fill={entry.receita > 0 ? "#14926b" : "#e5e7eb"}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </div>
             {stats?.daily.every((d) => d.receita === 0) && (

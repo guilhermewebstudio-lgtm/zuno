@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, Heart, MessageCircle, Plus, User, LogOut, ShieldCheck, Smartphone, Home, Shirt, Car } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
@@ -41,6 +43,14 @@ function IconLink({
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = query.trim();
+    if (trimmed) router.push(`/pesquisa?q=${encodeURIComponent(trimmed)}`);
+  }
 
   return (
     <motion.header
@@ -61,14 +71,19 @@ export default function Header() {
           />
         </Link>
 
-        <div className="hidden md:flex flex-1 max-w-xl items-center gap-2 bg-gray-100 rounded-full px-4 py-2.5 focus-within:ring-2 ring-[var(--zuno-navy)] transition-all">
+        <form
+          onSubmit={handleSearch}
+          className="hidden md:flex flex-1 max-w-xl items-center gap-2 bg-gray-100 rounded-full px-4 py-2.5 focus-within:ring-2 ring-[var(--zuno-navy)] transition-all"
+        >
           <Search size={18} className="text-gray-400 shrink-0" />
           <input
             type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Procura em Zuno: telemóveis, sofás, aulas de guitarra..."
             className="bg-transparent outline-none text-sm w-full placeholder:text-gray-400"
           />
-        </div>
+        </form>
 
         <div className="flex items-center gap-1 md:gap-1.5 ml-auto bg-gray-50 md:bg-transparent rounded-full p-1 md:p-0">
           <IconLink href="/favoritos" icon={Heart} title="Favoritos" />
@@ -113,14 +128,16 @@ export default function Header() {
       </div>
 
       <div className="md:hidden px-4 pb-3">
-        <div className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2.5">
+        <form onSubmit={handleSearch} className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2.5">
           <Search size={18} className="text-gray-400 shrink-0" />
           <input
             type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Procura em Zuno..."
             className="bg-transparent outline-none text-sm w-full placeholder:text-gray-400"
           />
-        </div>
+        </form>
       </div>
 
       <div className="hidden md:block border-t border-black/5 bg-white/60">
