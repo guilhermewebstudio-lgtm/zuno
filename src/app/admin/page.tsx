@@ -23,14 +23,14 @@ import {
 import {
   ResponsiveContainer,
   AreaChart,
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   Area,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
-  Cell,
+  Dot,
 } from "recharts";
 
 interface Stats {
@@ -278,7 +278,7 @@ export default function AdminPage() {
             <p className="text-xs text-gray-400 mb-6">Euros recebidos por dia nos últimos 14 dias</p>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats?.daily || []}>
+                <LineChart data={stats?.daily || []}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#eee" vertical={false} />
                   <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#999" }} />
                   <YAxis
@@ -287,15 +287,27 @@ export default function AdminPage() {
                     tickFormatter={(v) => `€${v}`}
                   />
                   <Tooltip formatter={(value) => [`€${Number(value).toFixed(2)}`, "Receita"]} />
-                  <Bar dataKey="receita" radius={[6, 6, 0, 0]} maxBarSize={28}>
-                    {(stats?.daily || []).map((entry, i) => (
-                      <Cell
-                        key={i}
-                        fill={entry.receita > 0 ? "#14926b" : "#e5e7eb"}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
+                  <Line
+                    type="monotone"
+                    dataKey="receita"
+                    stroke="#14926b"
+                    strokeWidth={3}
+                    dot={(props) => {
+                      const { cx, cy, payload } = props;
+                      return (
+                        <Dot
+                          key={`dot-${payload.date}`}
+                          cx={cx}
+                          cy={cy}
+                          r={payload.receita > 0 ? 5 : 3}
+                          fill={payload.receita > 0 ? "#14926b" : "#e5e7eb"}
+                          stroke="#fff"
+                          strokeWidth={2}
+                        />
+                      );
+                    }}
+                  />
+                </LineChart>
               </ResponsiveContainer>
             </div>
             {stats?.daily.every((d) => d.receita === 0) && (

@@ -23,12 +23,27 @@ export async function PATCH(req: NextRequest) {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ error: "Não autorizado." }, { status: 403 });
 
-  const { listingId, status, isFeatured } = await req.json();
+  const { listingId, status, isFeatured, isSpotlight } = await req.json();
   if (!listingId) return NextResponse.json({ error: "listingId em falta." }, { status: 400 });
 
-  const data: { status?: "ACTIVE" | "SOLD" | "PAUSED" | "EXPIRED" | "REMOVED"; isFeatured?: boolean } = {};
+  const data: {
+    status?: "ACTIVE" | "SOLD" | "PAUSED" | "EXPIRED" | "REMOVED";
+    isFeatured?: boolean;
+    isSpotlight?: boolean;
+    spotlightUntil?: Date | null;
+  } = {};
   if (status) data.status = status;
   if (typeof isFeatured === "boolean") data.isFeatured = isFeatured;
+  if (typeof isSpotlight === "boolean") {
+    data.isSpotlight = isSpotlight;
+    if (isSpotlight) {
+      const until = new Date();
+      until.setDate(until.getDate() + 1);
+      data.spotlightUntil = until;
+    } else {
+      data.spotlightUntil = null;
+    }
+  }
 
   const listing = await prisma.listing.update({ where: { id: listingId }, data });
   return NextResponse.json({ listing });

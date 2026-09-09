@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search, ShieldCheck, Zap, TrendingUp } from "lucide-react";
 
-const previewCards = [
+interface SpotlightListing {
+  id: string;
+  title: string;
+  price: string;
+  images: { url: string }[];
+  category: { namePt: string };
+}
+
+const decorativeCards = [
   { title: "iPhone 13 Pro", price: "€520", tag: "Tecnologia" },
   { title: "Apartamento T2", price: "€1.200/mês", tag: "Imóveis" },
   { title: "Aulas de Inglês", price: "€15/hora", tag: "Aulas" },
@@ -14,12 +23,21 @@ const previewCards = [
 export default function Hero() {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [spotlight, setSpotlight] = useState<SpotlightListing[] | null>(null);
+
+  useEffect(() => {
+    fetch("/api/listings?spotlight=true")
+      .then((r) => r.json())
+      .then((d) => setSpotlight(d.listings || []));
+  }, []);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = query.trim();
     if (trimmed) router.push(`/pesquisa?q=${encodeURIComponent(trimmed)}`);
   }
+
+  const useReal = spotlight && spotlight.length > 0;
 
   return (
     <section className="relative overflow-hidden bg-[var(--zuno-navy)]">
@@ -141,41 +159,80 @@ export default function Hero() {
         </div>
 
         <div className="relative hidden lg:block h-[420px]">
-          {previewCards.map((card, i) => (
-            <motion.div
-              key={card.title}
-              initial={{ opacity: 0, y: 30, rotate: 0 }}
-              animate={{
-                opacity: 1,
-                y: [0, -10, 0],
-                rotate: i === 0 ? -6 : i === 1 ? 3 : -2,
-              }}
-              transition={{
-                opacity: { duration: 0.6, delay: 0.4 + i * 0.15 },
-                y: {
-                  duration: 5 + i,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.6,
-                },
-              }}
-              className="absolute bg-white rounded-2xl shadow-2xl p-4 w-56"
-              style={{
-                top: `${i * 130}px`,
-                left: i === 1 ? "38%" : i === 2 ? "10%" : "0%",
-                zIndex: 3 - i,
-              }}
-            >
-              <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-[var(--zuno-navy)]/10 to-[var(--zuno-green)]/15 mb-3" />
-              <p className="text-xs font-bold text-[var(--zuno-navy-dark)]">{card.title}</p>
-              <div className="flex items-center justify-between mt-1">
-                <span className="text-sm font-extrabold text-[var(--zuno-navy)]">{card.price}</span>
-                <span className="text-[9px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-                  {card.tag}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+          {useReal
+            ? spotlight!.map((item, i) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 30, rotate: 0 }}
+                  animate={{
+                    opacity: 1,
+                    y: [0, -10, 0],
+                    rotate: i === 0 ? -6 : i === 1 ? 3 : -2,
+                  }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.4 + i * 0.15 },
+                    y: { duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 },
+                  }}
+                  className="absolute w-56"
+                  style={{
+                    top: `${i * 130}px`,
+                    left: i === 1 ? "38%" : i === 2 ? "10%" : "0%",
+                    zIndex: 3 - i,
+                  }}
+                >
+                  <Link href={`/anuncio/${item.id}`}>
+                    <div className="bg-white rounded-2xl shadow-2xl p-4 hover:scale-[1.02] transition-transform">
+                      <div className="aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-gray-100">
+                        {item.images[0] ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={item.images[0].url} alt={item.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-[var(--zuno-navy)]/10 to-[var(--zuno-green)]/15" />
+                        )}
+                      </div>
+                      <p className="text-xs font-bold text-[var(--zuno-navy-dark)] truncate">{item.title}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className="text-sm font-extrabold text-[var(--zuno-navy)]">
+                          €{Number(item.price).toFixed(2)}
+                        </span>
+                        <span className="text-[9px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                          {item.category.namePt}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))
+            : decorativeCards.map((card, i) => (
+                <motion.div
+                  key={card.title}
+                  initial={{ opacity: 0, y: 30, rotate: 0 }}
+                  animate={{
+                    opacity: 1,
+                    y: [0, -10, 0],
+                    rotate: i === 0 ? -6 : i === 1 ? 3 : -2,
+                  }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.4 + i * 0.15 },
+                    y: { duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 },
+                  }}
+                  className="absolute bg-white rounded-2xl shadow-2xl p-4 w-56"
+                  style={{
+                    top: `${i * 130}px`,
+                    left: i === 1 ? "38%" : i === 2 ? "10%" : "0%",
+                    zIndex: 3 - i,
+                  }}
+                >
+                  <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-[var(--zuno-navy)]/10 to-[var(--zuno-green)]/15 mb-3" />
+                  <p className="text-xs font-bold text-[var(--zuno-navy-dark)]">{card.title}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-sm font-extrabold text-[var(--zuno-navy)]">{card.price}</span>
+                    <span className="text-[9px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                      {card.tag}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
         </div>
       </div>
 

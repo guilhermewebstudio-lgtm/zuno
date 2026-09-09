@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { UploadCloud, X, Loader2, Camera, FileText, Tag } from "lucide-react";
+import { UploadCloud, X, Loader2, Camera, FileText, Tag, MapPin } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -135,8 +135,9 @@ export default function VenderPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto"
+          className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_320px] gap-6 items-start"
         >
+          <div>
           <h1 className="text-2xl font-bold text-[var(--zuno-navy-dark)] mb-1">Publicar anúncio</h1>
           <p className="text-sm text-gray-500 mb-6">
             O teu anúncio fica ativo durante 30 dias — depois disso podes republicá-lo.
@@ -188,7 +189,10 @@ export default function VenderPage() {
               <SectionTitle step={2} icon={FileText} title="Detalhes" />
 
               <div>
-                <label className="text-xs font-medium text-gray-500">Título</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-medium text-gray-500">Título</label>
+                  <span className="text-[10px] text-gray-300">{title.length}/80</span>
+                </div>
                 <input
                   required
                   value={title}
@@ -200,10 +204,14 @@ export default function VenderPage() {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-gray-500">Descrição</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-medium text-gray-500">Descrição</label>
+                  <span className="text-[10px] text-gray-300">{description.length}/1000</span>
+                </div>
                 <textarea
                   required
                   rows={4}
+                  maxLength={1000}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 ring-[var(--zuno-navy)] resize-none"
@@ -213,17 +221,22 @@ export default function VenderPage() {
 
               <div>
                 <label className="text-xs font-medium text-gray-500">Categoria</label>
-                <select
-                  required
-                  value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 ring-[var(--zuno-navy)]"
-                >
-                  <option value="">Escolhe...</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>{c.namePt}</option>
-                  ))}
-                </select>
+                <div className="relative mt-1">
+                  <select
+                    required
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 ring-[var(--zuno-navy)] bg-white"
+                  >
+                    <option value="">Escolhe...</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.namePt}</option>
+                    ))}
+                  </select>
+                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 111.08 1.04l-4.25 4.65a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                  </svg>
+                </div>
               </div>
 
               {showCondition && (
@@ -299,6 +312,38 @@ export default function VenderPage() {
               {submitting ? "A publicar..." : "Publicar anúncio"}
             </motion.button>
           </form>
+          </div>
+
+          {/* Pré-visualização ao vivo */}
+          <div className="hidden lg:block sticky top-24">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              Assim vai ficar
+            </p>
+            <div className="bg-white rounded-2xl overflow-hidden border border-black/5 shadow-sm">
+              <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+                {images[0] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={images[0]} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-300">
+                    <Camera size={28} />
+                  </div>
+                )}
+              </div>
+              <div className="p-3.5">
+                <p className="font-semibold text-sm text-[var(--zuno-navy-dark)] truncate">
+                  {title || "O título do teu anúncio"}
+                </p>
+                <p className="text-base font-bold mt-1 text-[var(--zuno-navy)]">
+                  €{price ? Number(price).toFixed(2) : "0.00"}
+                </p>
+                <div className="flex items-center gap-1 text-xs text-gray-400 mt-1.5">
+                  <MapPin size={12} />
+                  {city || "Cidade"}
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </main>
       <Footer />

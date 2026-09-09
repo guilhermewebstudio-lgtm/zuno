@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   const city = searchParams.get("city");
   const q = searchParams.get("q");
   const mine = searchParams.get("mine");
+  const spotlight = searchParams.get("spotlight");
 
   const where: {
     status: "ACTIVE";
@@ -17,11 +18,13 @@ export async function GET(req: NextRequest) {
     city?: { contains: string; mode: "insensitive" };
     title?: { contains: string; mode: "insensitive" };
     userId?: string;
+    isSpotlight?: boolean;
   } = { status: "ACTIVE" };
 
   if (categorySlug) where.category = { slug: categorySlug };
   if (city) where.city = { contains: city, mode: "insensitive" };
   if (q) where.title = { contains: q, mode: "insensitive" };
+  if (spotlight === "true") where.isSpotlight = true;
 
   if (mine === "true") {
     const user = await getCurrentUser();
@@ -31,8 +34,10 @@ export async function GET(req: NextRequest) {
 
   const listings = await prisma.listing.findMany({
     where,
-    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-    take: 60,
+    orderBy: spotlight === "true"
+      ? [{ spotlightUntil: "desc" }]
+      : [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    take: spotlight === "true" ? 3 : 60,
     include: {
       images: { orderBy: { position: "asc" }, take: 1 },
       category: { select: { namePt: true, slug: true } },
