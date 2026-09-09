@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, Save, RotateCcw, Eye, Calendar, Pencil, Trash2, Pause, Play, BadgeCheck } from "lucide-react";
+import { User, Mail, Phone, MapPin, Save, RotateCcw, Eye, Calendar, Pencil, Trash2, Pause, Play, BadgeCheck, Star } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PricingInfoModal from "@/components/PricingInfoModal";
 import { useAuth } from "@/context/AuthContext";
 
 interface ListingRow {
@@ -49,6 +50,7 @@ export default function PerfilPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
+  const [modalType, setModalType] = useState<"featured" | "verified" | null>(null);
 
   useEffect(() => {
     if (!loading && !user) router.push("/entrar");
@@ -132,6 +134,15 @@ export default function PerfilPage() {
             <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
               <Mail size={12} /> {user.email}
             </p>
+
+            {!user.isVerified && (
+              <button
+                onClick={() => setModalType("verified")}
+                className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 px-3 py-2 rounded-xl w-full justify-center hover:bg-[var(--zuno-navy)]/15 transition-colors"
+              >
+                <BadgeCheck size={13} /> Pedir selo de Verificado
+              </button>
+            )}
 
             <form onSubmit={handleSave} className="mt-6 space-y-3">
               <div>
@@ -259,6 +270,14 @@ export default function PerfilPage() {
                               <RotateCcw size={12} /> Republicar
                             </button>
                           )}
+                          {l.status === "ACTIVE" && (
+                            <button
+                              onClick={() => setModalType("featured")}
+                              className="flex items-center gap-1 text-xs font-semibold text-[var(--zuno-gold)] bg-[var(--zuno-gold)]/10 px-3 py-1.5 rounded-full hover:bg-[var(--zuno-gold)]/20 transition-colors"
+                            >
+                              <Star size={12} /> Destacar
+                            </button>
+                          )}
                           {(l.status === "ACTIVE" || l.status === "PAUSED") && (
                             <button
                               onClick={() => togglePause(l.id, l.status)}
@@ -291,6 +310,7 @@ export default function PerfilPage() {
         </div>
       </main>
       <Footer />
+      <PricingInfoModal open={modalType !== null} onClose={() => setModalType(null)} type={modalType || "featured"} />
     </>
   );
 }

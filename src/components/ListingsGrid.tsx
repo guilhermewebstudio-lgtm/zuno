@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import FavoriteButton from "./FavoriteButton";
+import VerifiedBadgeMini from "./VerifiedBadgeMini";
 
 interface Listing {
   id: string;
@@ -14,6 +15,7 @@ interface Listing {
   isFeatured: boolean;
   images: { url: string }[];
   category: { namePt: string };
+  user: { isVerified?: boolean };
 }
 
 export default function ListingsGrid() {
@@ -103,9 +105,12 @@ export default function ListingsGrid() {
                   <p className="font-semibold text-sm text-[var(--zuno-navy-dark)] truncate">
                     {item.title}
                   </p>
-                  <p className="text-base font-bold mt-1 text-[var(--zuno-navy)]">
-                    €{Number(item.price).toFixed(2)}
-                  </p>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <p className="text-base font-bold text-[var(--zuno-navy)]">
+                      €{Number(item.price).toFixed(2)}
+                    </p>
+                    {item.user?.isVerified && <VerifiedBadgeMini />}
+                  </div>
                   <div className="flex items-center gap-1 text-xs text-gray-400 mt-1.5">
                     <MapPin size={12} />
                     {item.city}

@@ -8,6 +8,7 @@ import { MapPin, SearchX } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FavoriteButton from "@/components/FavoriteButton";
+import VerifiedBadgeMini from "@/components/VerifiedBadgeMini";
 
 interface Listing {
   id: string;
@@ -16,6 +17,7 @@ interface Listing {
   city: string;
   isFeatured: boolean;
   images: { url: string }[];
+  user: { isVerified?: boolean };
 }
 
 export default function PesquisaPage() {
@@ -104,9 +106,12 @@ function PesquisaContent() {
                   </div>
                   <div className="p-3.5">
                     <p className="font-semibold text-sm text-[var(--zuno-navy-dark)] truncate">{item.title}</p>
-                    <p className="text-base font-bold mt-1 text-[var(--zuno-navy)]">
-                      €{Number(item.price).toFixed(2)}
-                    </p>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <p className="text-base font-bold text-[var(--zuno-navy)]">
+                        €{Number(item.price).toFixed(2)}
+                      </p>
+                      {item.user?.isVerified && <VerifiedBadgeMini />}
+                    </div>
                     <div className="flex items-center gap-1 text-xs text-gray-400 mt-1.5">
                       <MapPin size={12} />
                       {item.city}

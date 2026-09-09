@@ -8,6 +8,7 @@ import { MapPin, Heart } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FavoriteButton from "@/components/FavoriteButton";
+import VerifiedBadgeMini from "@/components/VerifiedBadgeMini";
 import { useAuth } from "@/context/AuthContext";
 
 interface FavoriteRow {
@@ -18,6 +19,7 @@ interface FavoriteRow {
     city: string;
     images: { url: string }[];
     category: { namePt: string };
+    user: { isVerified?: boolean };
   };
 }
 
@@ -96,9 +98,12 @@ export default function FavoritosPage() {
                   </div>
                   <div className="p-3.5">
                     <p className="font-semibold text-sm text-[var(--zuno-navy-dark)] truncate">{listing.title}</p>
-                    <p className="text-base font-bold mt-1 text-[var(--zuno-navy)]">
-                      €{Number(listing.price).toFixed(2)}
-                    </p>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <p className="text-base font-bold text-[var(--zuno-navy)]">
+                        €{Number(listing.price).toFixed(2)}
+                      </p>
+                      {listing.user?.isVerified && <VerifiedBadgeMini />}
+                    </div>
                     <div className="flex items-center gap-1 text-xs text-gray-400 mt-1.5">
                       <MapPin size={12} />
                       {listing.city}

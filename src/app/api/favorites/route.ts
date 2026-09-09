@@ -14,6 +14,7 @@ export async function GET() {
         include: {
           images: { take: 1, orderBy: { position: "asc" } },
           category: { select: { namePt: true } },
+          user: { select: { isVerified: true } },
         },
       },
     },
