@@ -20,7 +20,7 @@ export async function GET() {
   const since = new Date();
   since.setDate(since.getDate() - DAYS);
 
-  const [recentUsers, recentListings] = await Promise.all([
+  const [recentUsers, recentListings, recentPayments, totalRevenueCents] = await Promise.all([
     prisma.user.findMany({
       where: { createdAt: { gte: since } },
       select: { createdAt: true },
@@ -29,14 +29,22 @@ export async function GET() {
       where: { createdAt: { gte: since } },
       select: { createdAt: true },
     }),
+    prisma.payment.findMany({
+      where: { status: "PAID", createdAt: { gte: since } },
+      select: { createdAt: true, amountCents: true },
+    }),
+    prisma.payment.aggregate({
+      where: { status: "PAID" },
+      _sum: { amountCents: true },
+    }),
   ]);
 
-  const dayBuckets: { date: string; utilizadores: number; anuncios: number }[] = [];
+  const dayBuckets: { date: string; utilizadores: number; anuncios: number; receita: number }[] = [];
   for (let i = DAYS - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const key = d.toISOString().slice(0, 10);
-    dayBuckets.push({ date: key.slice(5), utilizadores: 0, anuncios: 0 });
+    dayBuckets.push({ date: key.slice(5), utilizadores: 0, anuncios: 0, receita: 0 });
   }
 
   const indexForDate = (date: Date) => {
@@ -52,6 +60,10 @@ export async function GET() {
     const idx = indexForDate(l.createdAt);
     if (idx >= 0) dayBuckets[idx].anuncios += 1;
   });
+  recentPayments.forEach((p) => {
+    const idx = indexForDate(p.createdAt);
+    if (idx >= 0) dayBuckets[idx].receita += p.amountCents / 100;
+  });
 
   return NextResponse.json({
     totalUsers,
@@ -59,6 +71,7 @@ export async function GET() {
     activeListings,
     featuredListings,
     pendingReports,
+    totalRevenue: (totalRevenueCents._sum.amountCents || 0) / 100,
     daily: dayBuckets,
   });
 }

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Camera, Users, Music2, Send } from "lucide-react";
-import PaymentBadges from "./PaymentBadges";
+import { Camera, Music2, Send } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -38,25 +37,31 @@ export default function Footer() {
             />
           </Link>
           <p className="text-sm mt-3 mb-4">O teu mercado online em Portugal.</p>
-          <div className="flex items-center gap-2 mb-5">
-            <a href="#" aria-label="Instagram" className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-              <Camera size={16} />
+          <div className="flex items-center gap-2">
+            <a
+              href="#"
+              aria-label="Instagram (brevemente)"
+              title="Instagram — brevemente"
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 transition-colors text-xs font-medium px-3 py-1.5 rounded-full"
+            >
+              <Camera size={14} /> Instagram
             </a>
-            <a href="#" aria-label="TikTok" className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-              <Music2 size={16} />
-            </a>
-            <a href="#" aria-label="Facebook" className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-              <Users size={16} />
+            <a
+              href="#"
+              aria-label="TikTok (brevemente)"
+              title="TikTok — brevemente"
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 transition-colors text-xs font-medium px-3 py-1.5 rounded-full"
+            >
+              <Music2 size={14} /> TikTok
             </a>
           </div>
-          <PaymentBadges />
         </div>
         <div>
           <h4 className="text-white font-semibold text-sm mb-3">Zuno</h4>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-white transition-colors">Sobre nós</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Como funciona</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Contacto</a></li>
+            <li><Link href="/sobre" className="hover:text-white transition-colors">Sobre nós</Link></li>
+            <li><Link href="/como-funciona" className="hover:text-white transition-colors">Como funciona</Link></li>
+            <li><Link href="/contacto" className="hover:text-white transition-colors">Contacto</Link></li>
           </ul>
         </div>
         <div>
@@ -71,9 +76,9 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold text-sm mb-3">Ajuda</h4>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-white transition-colors">Segurança</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Termos e condições</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Privacidade</a></li>
+            <li><Link href="/seguranca" className="hover:text-white transition-colors">Segurança</Link></li>
+            <li><Link href="/termos" className="hover:text-white transition-colors">Termos e condições</Link></li>
+            <li><Link href="/privacidade" className="hover:text-white transition-colors">Privacidade</Link></li>
           </ul>
         </div>
       </div>

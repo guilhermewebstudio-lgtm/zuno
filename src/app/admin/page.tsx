@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   Mail,
   Send,
+  Euro,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -34,7 +35,8 @@ interface Stats {
   activeListings: number;
   featuredListings: number;
   pendingReports: number;
-  daily: { date: string; utilizadores: number; anuncios: number }[];
+  totalRevenue: number;
+  daily: { date: string; utilizadores: number; anuncios: number; receita: number }[];
 }
 
 interface AdminUser {
@@ -148,8 +150,9 @@ export default function AdminPage() {
   const statCards = [
     { label: "Utilizadores", value: stats?.totalUsers ?? "—", icon: Users, color: "var(--zuno-navy)" },
     { label: "Anúncios totais", value: stats?.totalListings ?? "—", icon: ListChecks, color: "var(--zuno-navy)" },
-    { label: "Anúncios ativos", value: stats?.activeListings ?? "—", icon: CheckCircle2, color: "var(--zuno-gold)" },
+    { label: "Anúncios ativos", value: stats?.activeListings ?? "—", icon: CheckCircle2, color: "var(--zuno-green)" },
     { label: "Em destaque", value: stats?.featuredListings ?? "—", icon: Star, color: "var(--zuno-gold)" },
+    { label: "Receita total", value: stats ? `€${stats.totalRevenue.toFixed(2)}` : "—", icon: Euro, color: "var(--zuno-green)" },
     { label: "Denúncias pendentes", value: stats?.pendingReports ?? "—", icon: Flag, color: "#e0483e" },
   ];
 
@@ -181,7 +184,7 @@ export default function AdminPage() {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-8">
           {statCards.map((s, i) => (
             <motion.div
               key={s.label}
@@ -248,7 +251,47 @@ export default function AdminPage() {
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[var(--zuno-gold)]" /> Anúncios</span>
             </div>
           </motion.div>
-        ) : tab === "users" ? (
+        ) : null}
+
+        {tab === "dashboard" && !dataLoading && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 mt-6"
+          >
+            <h3 className="font-bold text-[var(--zuno-navy-dark)] mb-1">Receita (destaques pagos)</h3>
+            <p className="text-xs text-gray-400 mb-6">Euros recebidos por dia nos últimos 14 dias</p>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={stats?.daily || []}>
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#14926b" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#14926b" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#999" }} />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 11, fill: "#999" }}
+                    tickFormatter={(v) => `€${v}`}
+                  />
+                  <Tooltip formatter={(value: number) => [`€${value.toFixed(2)}`, "Receita"]} />
+                  <Area type="monotone" dataKey="receita" stroke="#14926b" fill="url(#colorRevenue)" strokeWidth={2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+            {stats?.daily.every((d) => d.receita === 0) && (
+              <p className="text-xs text-gray-400 mt-3 text-center">
+                Ainda sem receita registada — vai aparecer aqui assim que os pagamentos de destaque estiverem ativos.
+              </p>
+            )}
+          </motion.div>
+        )}
+
+        {!dataLoading && tab === "users" ? (
           <div className="bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-500 text-left">
@@ -291,7 +334,7 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
-        ) : tab === "listings" ? (
+        ) : !dataLoading && tab === "listings" ? (
           <div className="bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-500 text-left">
@@ -343,7 +386,7 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
-        ) : (
+        ) : !dataLoading && tab === "email" ? (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -410,7 +453,7 @@ export default function AdminPage() {
               </motion.button>
             </form>
           </motion.div>
-        )}
+        ) : null}
       </div>
     </main>
   );
