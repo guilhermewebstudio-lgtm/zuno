@@ -52,6 +52,8 @@ export default function PerfilPage() {
   const [saved, setSaved] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [modalType, setModalType] = useState<"featured" | "verified" | null>(null);
+  const [rating, setRating] = useState<number | null>(null);
+  const [ratingCount, setRatingCount] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) router.push("/entrar");
@@ -66,6 +68,8 @@ export default function PerfilPage() {
         setName(d.user?.name || "");
         setPhone(d.user?.phone || "");
         setCity(d.user?.city || "");
+        setRating(d.rating);
+        setRatingCount(d.ratingCount || 0);
       })
       .finally(() => setDataLoading(false));
   }, [user]);
@@ -135,6 +139,21 @@ export default function PerfilPage() {
             <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
               <Mail size={12} /> {user.email}
             </p>
+            {rating !== null && ratingCount > 0 && (
+              <div className="flex items-center gap-1 mt-1.5">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <Star
+                    key={n}
+                    size={12}
+                    className={n <= Math.round(rating) ? "text-[var(--zuno-gold)]" : "text-gray-200"}
+                    fill={n <= Math.round(rating) ? "currentColor" : "none"}
+                  />
+                ))}
+                <span className="text-xs text-gray-400 ml-1">
+                  {rating.toFixed(1)} ({ratingCount})
+                </span>
+              </div>
+            )}
 
             {!user.isVerified && (
               <button

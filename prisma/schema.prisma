@@ -29,6 +29,7 @@ model User {
   reviewsGiven  Review[]  @relation("ReviewerUser")
   reviewsReceived Review[] @relation("ReviewedUser")
   payments      Payment[]
+  comments      Comment[]
 }
 
 model Category {
@@ -80,6 +81,8 @@ model Listing {
   favorites Favorite[]
   reports   Report[]
   payments  Payment[]
+  reviews   Review[]
+  comments  Comment[]
 }
 
 model ListingImage {
@@ -133,6 +136,8 @@ model Report {
 
 model Review {
   id             String   @id @default(cuid())
+  listingId      String?
+  listing        Listing? @relation(fields: [listingId], references: [id])
   reviewedUserId String
   reviewedUser   User     @relation("ReviewedUser", fields: [reviewedUserId], references: [id])
   reviewerId     String
@@ -140,6 +145,18 @@ model Review {
   rating         Int
   comment        String?
   createdAt      DateTime @default(now())
+
+  @@unique([listingId, reviewerId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  body      String
+  createdAt DateTime @default(now())
 }
 
 enum PaymentType {

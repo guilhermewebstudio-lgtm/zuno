@@ -21,10 +21,20 @@ export async function GET(
     return NextResponse.json({ error: "Anúncio não encontrado." }, { status: 404 });
   }
 
+  const ratingAgg = await prisma.review.aggregate({
+    where: { reviewedUserId: listing.userId },
+    _avg: { rating: true },
+    _count: { rating: true },
+  });
+
   // incrementa vistas sem bloquear a resposta
   prisma.listing.update({ where: { id }, data: { viewsCount: { increment: 1 } } }).catch(() => {});
 
-  return NextResponse.json({ listing });
+  return NextResponse.json({
+    listing,
+    sellerRating: ratingAgg._avg.rating,
+    sellerRatingCount: ratingAgg._count.rating,
+  });
 }
 
 export async function PATCH(

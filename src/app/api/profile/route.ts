@@ -6,13 +6,25 @@ export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
 
-  const listings = await prisma.listing.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: "desc" },
-    include: { images: { take: 1, orderBy: { position: "asc" } } },
-  });
+  const [listings, ratingAgg] = await Promise.all([
+    prisma.listing.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      include: { images: { take: 1, orderBy: { position: "asc" } } },
+    }),
+    prisma.review.aggregate({
+      where: { reviewedUserId: user.id },
+      _avg: { rating: true },
+      _count: { rating: true },
+    }),
+  ]);
 
-  return NextResponse.json({ user, listings });
+  return NextResponse.json({
+    user,
+    listings,
+    rating: ratingAgg._avg.rating,
+    ratingCount: ratingAgg._count.rating,
+  });
 }
 
 export async function PATCH(req: NextRequest) {
