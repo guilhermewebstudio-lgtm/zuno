@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Facebook, Music2, Send } from "lucide-react";
+import { Camera, Users, Music2, Send } from "lucide-react";
 import PaymentBadges from "./PaymentBadges";
 
 export default function Footer() {
@@ -40,13 +40,13 @@ export default function Footer() {
           <p className="text-sm mt-3 mb-4">O teu mercado online em Portugal.</p>
           <div className="flex items-center gap-2 mb-5">
             <a href="#" aria-label="Instagram" className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-              <Instagram size={16} />
+              <Camera size={16} />
             </a>
             <a href="#" aria-label="TikTok" className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
               <Music2 size={16} />
             </a>
             <a href="#" aria-label="Facebook" className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-              <Facebook size={16} />
+              <Users size={16} />
             </a>
           </div>
           <PaymentBadges />
