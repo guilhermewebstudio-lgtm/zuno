@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Tag, Lock, MessageCircle, Star, BadgeCheck } from "lucide-react";
+import { MapPin, Tag, Lock, MessageCircle, Star } from "lucide-react";
+import VerifiedBadgeMini from "@/components/VerifiedBadgeMini";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -119,8 +120,8 @@ export default function AnuncioPage() {
             <p className="font-semibold text-[var(--zuno-navy-dark)] flex items-center gap-1.5">
               {listing.user.name}
               {listing.user.isVerified && (
-                <span className="flex items-center gap-1 text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 text-xs font-bold px-2 py-0.5 rounded-full">
-                  <BadgeCheck size={12} /> Verificado
+                <span className="flex items-center gap-1 text-[var(--zuno-navy)] text-xs font-semibold">
+                  <VerifiedBadgeMini /> Verificado
                 </span>
               )}
             </p>

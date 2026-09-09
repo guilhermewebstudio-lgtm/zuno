@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, Save, RotateCcw, Eye, Calendar, Pencil, Trash2, Pause, Play, BadgeCheck, Star } from "lucide-react";
+import { User, Mail, Phone, MapPin, Save, RotateCcw, Eye, Calendar, Pencil, Trash2, Pause, Play, Star } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PricingInfoModal from "@/components/PricingInfoModal";
+import VerifiedBadgeMini from "@/components/VerifiedBadgeMini";
 import { useAuth } from "@/context/AuthContext";
 
 interface ListingRow {
@@ -126,8 +127,8 @@ export default function PerfilPage() {
             <h1 className="font-bold text-[var(--zuno-navy-dark)] text-lg flex items-center gap-1.5">
               {user.name}
               {user.isVerified && (
-                <span className="flex items-center gap-1 text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                  <BadgeCheck size={11} /> Verificado
+                <span className="flex items-center gap-1 text-[var(--zuno-navy)] text-xs font-semibold">
+                  <VerifiedBadgeMini /> Verificado
                 </span>
               )}
             </h1>
@@ -140,7 +141,7 @@ export default function PerfilPage() {
                 onClick={() => setModalType("verified")}
                 className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 px-3 py-2 rounded-xl w-full justify-center hover:bg-[var(--zuno-navy)]/15 transition-colors"
               >
-                <BadgeCheck size={13} /> Pedir selo de Verificado
+                <VerifiedBadgeMini /> Pedir selo de Verificado
               </button>
             )}
 
@@ -273,9 +274,9 @@ export default function PerfilPage() {
                           {l.status === "ACTIVE" && (
                             <button
                               onClick={() => setModalType("featured")}
-                              className="flex items-center gap-1 text-xs font-semibold text-[var(--zuno-gold)] bg-[var(--zuno-gold)]/10 px-3 py-1.5 rounded-full hover:bg-[var(--zuno-gold)]/20 transition-colors"
+                              className="flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-[var(--zuno-gold)] to-[#c9852f] px-3.5 py-1.5 rounded-full shadow-sm shadow-amber-900/20 hover:brightness-105 transition-all"
                             >
-                              <Star size={12} /> Destacar
+                              <Star size={12} fill="currentColor" /> Destacar
                             </button>
                           )}
                           {(l.status === "ACTIVE" || l.status === "PAUSED") && (
