@@ -18,6 +18,7 @@ import {
   Mail,
   Send,
   Euro,
+  BadgeCheck,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -49,6 +50,7 @@ interface AdminUser {
   city: string | null;
   isAdmin: boolean;
   isBanned: boolean;
+  isVerified: boolean;
   createdAt: string;
   _count: { listings: number };
 }
@@ -108,6 +110,15 @@ export default function AdminPage() {
       body: JSON.stringify({ userId, isBanned: !isBanned }),
     });
     setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, isBanned: !isBanned } : u)));
+  }
+
+  async function toggleVerified(userId: string, isVerified: boolean) {
+    await fetch("/api/admin/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, isVerified: !isVerified }),
+    });
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, isVerified: !isVerified } : u)));
   }
 
   async function toggleFeatured(listingId: string, isFeatured: boolean) {
@@ -304,6 +315,7 @@ export default function AdminPage() {
                   <th className="px-4 py-3">Email</th>
                   <th className="px-4 py-3">Anúncios</th>
                   <th className="px-4 py-3">Estado</th>
+                  <th className="px-4 py-3">Verificado</th>
                   <th className="px-4 py-3">Ações</th>
                 </tr>
               </thead>
@@ -321,6 +333,17 @@ export default function AdminPage() {
                       ) : (
                         <span className="text-green-600 text-xs font-semibold">Ativo</span>
                       )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => toggleVerified(u.id, u.isVerified)}
+                        className={`flex items-center gap-1 text-xs font-semibold transition-colors ${
+                          u.isVerified ? "text-[var(--zuno-navy)]" : "text-gray-400 hover:text-[var(--zuno-navy)]"
+                        }`}
+                      >
+                        <BadgeCheck size={14} />
+                        {u.isVerified ? "Verificado" : "Verificar"}
+                      </button>
                     </td>
                     <td className="px-4 py-3">
                       {!u.isAdmin && (

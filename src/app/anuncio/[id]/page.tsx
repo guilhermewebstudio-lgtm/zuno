@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Tag, Lock, MessageCircle, Star } from "lucide-react";
+import { MapPin, Tag, Lock, MessageCircle, Star, BadgeCheck } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -20,7 +20,7 @@ interface ListingDetail {
   status: string;
   images: { url: string }[];
   category: { namePt: string };
-  user: { id: string; name: string; city: string | null };
+  user: { id: string; name: string; city: string | null; isVerified: boolean };
 }
 
 export default function AnuncioPage() {
@@ -116,7 +116,14 @@ export default function AnuncioPage() {
 
           <div className="mt-8 border-t border-gray-100 pt-6">
             <p className="text-xs text-gray-400 mb-2">Vendido por</p>
-            <p className="font-semibold text-[var(--zuno-navy-dark)]">{listing.user.name}</p>
+            <p className="font-semibold text-[var(--zuno-navy-dark)] flex items-center gap-1.5">
+              {listing.user.name}
+              {listing.user.isVerified && (
+                <span className="flex items-center gap-1 text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 text-xs font-bold px-2 py-0.5 rounded-full">
+                  <BadgeCheck size={12} /> Verificado
+                </span>
+              )}
+            </p>
           </div>
 
           {user ? (

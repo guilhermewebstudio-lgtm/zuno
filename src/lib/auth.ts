@@ -51,6 +51,7 @@ export async function getCurrentUser() {
         avatarUrl: true,
         isAdmin: true,
         isBanned: true,
+        isVerified: true,
         createdAt: true,
       },
     });

@@ -17,6 +17,8 @@ model User {
   avatarUrl    String?
   isAdmin      Boolean  @default(false)
   isBanned     Boolean  @default(false)
+  isVerified   Boolean  @default(false)
+  verifiedUntil DateTime?
   createdAt    DateTime @default(now())
 
   listings      Listing[]
@@ -26,6 +28,7 @@ model User {
   reportsMade   Report[]  @relation("ReporterUser")
   reviewsGiven  Review[]  @relation("ReviewerUser")
   reviewsReceived Review[] @relation("ReviewedUser")
+  payments      Payment[]
 }
 
 model Category {
@@ -141,6 +144,7 @@ model Review {
 
 enum PaymentType {
   FEATURED_LISTING
+  VERIFIED_SELLER
 }
 
 enum PaymentStatus {
@@ -152,8 +156,10 @@ enum PaymentStatus {
 
 model Payment {
   id              String        @id @default(cuid())
-  listingId       String
-  listing         Listing       @relation(fields: [listingId], references: [id])
+  listingId       String?
+  listing         Listing?      @relation(fields: [listingId], references: [id])
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
   type            PaymentType
   amountCents     Int
   days            Int

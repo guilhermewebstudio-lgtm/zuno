@@ -13,7 +13,7 @@ export async function GET(
     include: {
       images: { orderBy: { position: "asc" } },
       category: true,
-      user: { select: { id: true, name: true, city: true, createdAt: true } },
+      user: { select: { id: true, name: true, city: true, createdAt: true, isVerified: true } },
     },
   });
 

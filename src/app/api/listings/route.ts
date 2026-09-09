@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
     include: {
       images: { orderBy: { position: "asc" }, take: 1 },
       category: { select: { namePt: true, slug: true } },
-      user: { select: { id: true, name: true } },
+      user: { select: { id: true, name: true, isVerified: true } },
     },
   });
 

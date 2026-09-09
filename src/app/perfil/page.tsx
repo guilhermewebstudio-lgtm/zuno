@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, Save, RotateCcw, Eye, Calendar, Pencil, Trash2, Pause, Play } from "lucide-react";
+import { User, Mail, Phone, MapPin, Save, RotateCcw, Eye, Calendar, Pencil, Trash2, Pause, Play, BadgeCheck } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -121,7 +121,14 @@ export default function PerfilPage() {
             <div className="w-16 h-16 rounded-full bg-[var(--zuno-navy)]/10 flex items-center justify-center mb-4">
               <User size={28} className="text-[var(--zuno-navy)]" />
             </div>
-            <h1 className="font-bold text-[var(--zuno-navy-dark)] text-lg">{user.name}</h1>
+            <h1 className="font-bold text-[var(--zuno-navy-dark)] text-lg flex items-center gap-1.5">
+              {user.name}
+              {user.isVerified && (
+                <span className="flex items-center gap-1 text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  <BadgeCheck size={11} /> Verificado
+                </span>
+              )}
+            </h1>
             <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
               <Mail size={12} /> {user.email}
             </p>
