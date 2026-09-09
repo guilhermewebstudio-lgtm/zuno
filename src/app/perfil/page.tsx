@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, Save, RotateCcw } from "lucide-react";
+import { User, Mail, Phone, MapPin, Save, RotateCcw, Eye, Calendar, Pencil, Trash2, Pause, Play } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -14,8 +14,29 @@ interface ListingRow {
   title: string;
   price: string;
   status: string;
+  viewsCount: number;
+  createdAt: string;
   expiresAt: string;
   images: { url: string }[];
+}
+
+function daysBetween(a: Date, b: Date) {
+  return Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function timeAgoLabel(createdAt: string) {
+  const days = daysBetween(new Date(createdAt), new Date());
+  if (days <= 0) return "publicado hoje";
+  if (days === 1) return "publicado há 1 dia";
+  return `publicado há ${days} dias`;
+}
+
+function expiresLabel(expiresAt: string, status: string) {
+  if (status !== "ACTIVE") return null;
+  const days = daysBetween(new Date(), new Date(expiresAt));
+  if (days <= 0) return "expira hoje";
+  if (days === 1) return "expira em 1 dia";
+  return `expira em ${days} dias`;
 }
 
 export default function PerfilPage() {
@@ -65,6 +86,22 @@ export default function PerfilPage() {
     setListings((prev) =>
       prev.map((l) => (l.id === id ? { ...l, status: "ACTIVE" } : l))
     );
+  }
+
+  async function togglePause(id: string, currentStatus: string) {
+    const newStatus = currentStatus === "PAUSED" ? "ACTIVE" : "PAUSED";
+    await fetch(`/api/listings/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    setListings((prev) => prev.map((l) => (l.id === id ? { ...l, status: newStatus } : l)));
+  }
+
+  async function cancelListing(id: string) {
+    if (!confirm("Tens a certeza que queres cancelar e remover este anúncio? Esta ação não pode ser desfeita.")) return;
+    await fetch(`/api/listings/${id}`, { method: "DELETE" });
+    setListings((prev) => prev.filter((l) => l.id !== id));
   }
 
   if (loading || !user) {
@@ -154,40 +191,93 @@ export default function PerfilPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {listings.map((l) => (
-                  <div
-                    key={l.id}
-                    className="bg-white rounded-2xl border border-black/5 shadow-sm p-3 flex items-center gap-3"
-                  >
-                    <div className="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden shrink-0">
-                      {l.images[0] && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={l.images[0].url} alt="" className="w-full h-full object-cover" />
-                      )}
+                {listings.map((l) => {
+                  const expLabel = expiresLabel(l.expiresAt, l.status);
+                  return (
+                    <div
+                      key={l.id}
+                      className="bg-white rounded-2xl border border-black/5 shadow-sm p-4 flex flex-col sm:flex-row gap-4"
+                    >
+                      <div className="w-full sm:w-24 h-40 sm:h-24 rounded-xl bg-gray-100 overflow-hidden shrink-0">
+                        {l.images[0] && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={l.images[0].url} alt="" className="w-full h-full object-cover" />
+                        )}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <Link href={`/anuncio/${l.id}`} className="font-semibold text-sm text-[var(--zuno-navy-dark)] hover:underline">
+                            {l.title}
+                          </Link>
+                          <span
+                            className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full shrink-0 ${
+                              l.status === "ACTIVE"
+                                ? "bg-green-100 text-green-700"
+                                : l.status === "EXPIRED"
+                                ? "bg-red-100 text-red-600"
+                                : l.status === "PAUSED"
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-gray-100 text-gray-500"
+                            }`}
+                          >
+                            {l.status === "ACTIVE" ? "Ativo" : l.status === "EXPIRED" ? "Expirado" : l.status === "PAUSED" ? "Pausado" : l.status}
+                          </span>
+                        </div>
+
+                        <p className="text-base font-bold text-[var(--zuno-navy)] mt-0.5">
+                          €{Number(l.price).toFixed(2)}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400 mt-2">
+                          <span className="flex items-center gap-1">
+                            <Eye size={12} /> {l.viewsCount} visualizaç{l.viewsCount === 1 ? "ão" : "ões"}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Calendar size={12} /> {timeAgoLabel(l.createdAt)}
+                          </span>
+                          {expLabel && (
+                            <span className={expLabel.includes("hoje") ? "text-red-500 font-medium" : ""}>
+                              · {expLabel}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2 mt-3">
+                          {l.status === "EXPIRED" && (
+                            <button
+                              onClick={() => republish(l.id)}
+                              className="flex items-center gap-1 text-xs font-semibold text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 px-3 py-1.5 rounded-full"
+                            >
+                              <RotateCcw size={12} /> Republicar
+                            </button>
+                          )}
+                          {(l.status === "ACTIVE" || l.status === "PAUSED") && (
+                            <button
+                              onClick={() => togglePause(l.id, l.status)}
+                              className="flex items-center gap-1 text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                            >
+                              {l.status === "PAUSED" ? <Play size={12} /> : <Pause size={12} />}
+                              {l.status === "PAUSED" ? "Reativar" : "Pausar"}
+                            </button>
+                          )}
+                          <Link
+                            href={`/anuncio/${l.id}/editar`}
+                            className="flex items-center gap-1 text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                          >
+                            <Pencil size={12} /> Editar
+                          </Link>
+                          <button
+                            onClick={() => cancelListing(l.id)}
+                            className="flex items-center gap-1 text-xs font-semibold text-red-500 bg-red-50 px-3 py-1.5 rounded-full hover:bg-red-100 transition-colors"
+                          >
+                            <Trash2 size={12} /> Cancelar
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <Link href={`/anuncio/${l.id}`} className="font-semibold text-sm text-[var(--zuno-navy-dark)] truncate block">
-                        {l.title}
-                      </Link>
-                      <p className="text-sm font-bold text-[var(--zuno-navy)]">€{Number(l.price).toFixed(2)}</p>
-                      <span
-                        className={`text-[10px] font-semibold uppercase ${
-                          l.status === "ACTIVE" ? "text-green-600" : l.status === "EXPIRED" ? "text-red-500" : "text-gray-400"
-                        }`}
-                      >
-                        {l.status === "ACTIVE" ? "Ativo" : l.status === "EXPIRED" ? "Expirado" : l.status}
-                      </span>
-                    </div>
-                    {l.status === "EXPIRED" && (
-                      <button
-                        onClick={() => republish(l.id)}
-                        className="flex items-center gap-1 text-xs font-semibold text-[var(--zuno-navy)] bg-[var(--zuno-navy)]/10 px-3 py-1.5 rounded-full shrink-0"
-                      >
-                        <RotateCcw size={12} /> Republicar
-                      </button>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </motion.div>

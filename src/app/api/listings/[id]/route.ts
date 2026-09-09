@@ -42,14 +42,25 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const allowed = ["title", "description", "price", "city", "status", "condition"] as const;
+  const allowed = ["title", "description", "price", "city", "status", "condition", "categoryId"] as const;
   const data: Record<string, unknown> = {};
   for (const key of allowed) {
     if (body[key] !== undefined) data[key] = body[key];
   }
   if (data.price !== undefined) data.price = Number(data.price);
 
-  const updated = await prisma.listing.update({ where: { id }, data });
+  if (Array.isArray(body.images)) {
+    await prisma.listingImage.deleteMany({ where: { listingId: id } });
+    data.images = {
+      create: body.images.map((url: string, i: number) => ({ url, position: i })),
+    };
+  }
+
+  const updated = await prisma.listing.update({
+    where: { id },
+    data,
+    include: { images: true },
+  });
   return NextResponse.json({ listing: updated });
 }
 
