@@ -23,14 +23,11 @@ import {
 import {
   ResponsiveContainer,
   AreaChart,
-  LineChart,
-  Line,
   Area,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
-  Dot,
 } from "recharts";
 
 interface Stats {
@@ -40,6 +37,8 @@ interface Stats {
   featuredListings: number;
   pendingReports: number;
   totalRevenue: number;
+  revenueFeatured: number;
+  revenueVerified: number;
   daily: { date: string; utilizadores: number; anuncios: number; receita: number }[];
 }
 
@@ -267,54 +266,71 @@ export default function AdminPage() {
           </motion.div>
         ) : null}
 
-        {tab === "dashboard" && !dataLoading && (
+        {tab === "dashboard" && !dataLoading && stats && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 mt-6"
+            className="relative overflow-hidden rounded-3xl mt-6 bg-gradient-to-br from-[var(--zuno-navy)] to-[var(--zuno-navy-dark)] p-6 md:p-8"
           >
-            <h3 className="font-bold text-[var(--zuno-navy-dark)] mb-1">Receita (destaques pagos)</h3>
-            <p className="text-xs text-gray-400 mb-6">Euros recebidos por dia nos últimos 14 dias</p>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={stats?.daily || []}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" vertical={false} />
-                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#999" }} />
-                  <YAxis
-                    allowDecimals={false}
-                    tick={{ fontSize: 11, fill: "#999" }}
-                    tickFormatter={(v) => `€${v}`}
-                  />
-                  <Tooltip formatter={(value) => [`€${Number(value).toFixed(2)}`, "Receita"]} />
-                  <Line
-                    type="monotone"
-                    dataKey="receita"
-                    stroke="#14926b"
-                    strokeWidth={3}
-                    dot={(props) => {
-                      const { cx, cy, payload } = props;
-                      return (
-                        <Dot
-                          key={`dot-${payload.date}`}
-                          cx={cx}
-                          cy={cy}
-                          r={payload.receita > 0 ? 5 : 3}
-                          fill={payload.receita > 0 ? "#14926b" : "#e5e7eb"}
-                          stroke="#fff"
-                          strokeWidth={2}
-                        />
-                      );
-                    }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            <div
+              className="absolute inset-0 opacity-[0.05]"
+              style={{
+                backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+                backgroundSize: "22px 22px",
+              }}
+              aria-hidden
+            />
+            <div className="zuno-blob zuno-float w-64 h-64 bg-[var(--zuno-green)] -top-16 -right-10" aria-hidden />
+
+            <div className="relative">
+              <p className="text-xs font-bold uppercase tracking-wider text-white/50">Receita total</p>
+              <div className="flex items-end gap-3 mt-1">
+                <p className="text-4xl md:text-5xl font-extrabold text-white">
+                  €{stats.totalRevenue.toFixed(2)}
+                </p>
+                <span className="text-xs text-white/40 mb-1.5">acumulado</span>
+              </div>
+
+              {/* Sparkline decorativo */}
+              <div className="flex items-end gap-1 h-12 mt-5">
+                {stats.daily.map((d, i) => {
+                  const max = Math.max(...stats.daily.map((x) => x.receita), 1);
+                  const h = Math.max((d.receita / max) * 100, 6);
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ height: 0 }}
+                      animate={{ height: `${h}%` }}
+                      transition={{ delay: i * 0.03, duration: 0.5, ease: "easeOut" }}
+                      className={`flex-1 rounded-full ${d.receita > 0 ? "bg-[var(--zuno-green)]" : "bg-white/10"}`}
+                    />
+                  );
+                })}
+              </div>
+              <p className="text-[10px] text-white/30 mt-1.5">Últimos 14 dias</p>
+
+              <div className="grid grid-cols-2 gap-3 mt-6">
+                <div className="bg-white/10 rounded-2xl p-4">
+                  <div className="flex items-center gap-1.5 text-white/60 text-xs font-semibold">
+                    <Star size={12} className="text-[var(--zuno-gold)]" /> Destaques
+                  </div>
+                  <p className="text-xl font-bold text-white mt-1">€{stats.revenueFeatured.toFixed(2)}</p>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-4">
+                  <div className="flex items-center gap-1.5 text-white/60 text-xs font-semibold">
+                    <BadgeCheck size={12} className="text-white" /> Verificados
+                  </div>
+                  <p className="text-xl font-bold text-white mt-1">€{stats.revenueVerified.toFixed(2)}</p>
+                </div>
+              </div>
+
+              {stats.totalRevenue === 0 && (
+                <p className="text-xs text-white/40 mt-5 text-center">
+                  Ainda sem receita registada — vai aparecer aqui assim que os pagamentos estiverem ativos.
+                </p>
+              )}
             </div>
-            {stats?.daily.every((d) => d.receita === 0) && (
-              <p className="text-xs text-gray-400 mt-3 text-center">
-                Ainda sem receita registada — vai aparecer aqui assim que os pagamentos de destaque estiverem ativos.
-              </p>
-            )}
           </motion.div>
         )}
 

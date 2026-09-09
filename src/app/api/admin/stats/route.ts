@@ -8,13 +8,18 @@ export async function GET() {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ error: "Não autorizado." }, { status: 403 });
 
-  const [totalUsers, totalListings, activeListings, featuredListings, pendingReports] =
+  const [totalUsers, totalListings, activeListings, featuredListings, pendingReports, revenueByType] =
     await Promise.all([
       prisma.user.count(),
       prisma.listing.count(),
       prisma.listing.count({ where: { status: "ACTIVE" } }),
       prisma.listing.count({ where: { isFeatured: true } }),
       prisma.report.count({ where: { status: "PENDING" } }),
+      prisma.payment.groupBy({
+        by: ["type"],
+        where: { status: "PAID" },
+        _sum: { amountCents: true },
+      }),
     ]);
 
   const since = new Date();
@@ -72,6 +77,8 @@ export async function GET() {
     featuredListings,
     pendingReports,
     totalRevenue: (totalRevenueCents._sum.amountCents || 0) / 100,
+    revenueFeatured: (revenueByType.find((r) => r.type === "FEATURED_LISTING")?._sum.amountCents || 0) / 100,
+    revenueVerified: (revenueByType.find((r) => r.type === "VERIFIED_SELLER")?._sum.amountCents || 0) / 100,
     daily: dayBuckets,
   });
 }

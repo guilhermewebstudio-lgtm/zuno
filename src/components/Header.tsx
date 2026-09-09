@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Heart, MessageCircle, Plus, User, LogOut, ShieldCheck, Smartphone, Home, Shirt, Car } from "lucide-react";
+import { Search, Heart, Plus, User, LogOut, ShieldCheck, Smartphone, Home, Shirt, Car } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
@@ -30,13 +30,13 @@ function IconLink({
     <Link
       href={href}
       title={title}
-      className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+      className={`flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-colors shrink-0 ${
         active
           ? "bg-[var(--zuno-navy)]/10 text-[var(--zuno-navy)]"
           : "text-gray-500 hover:bg-gray-100 hover:text-[var(--zuno-navy-dark)]"
       }`}
     >
-      <Icon size={19} />
+      <Icon size={18} />
     </Link>
   );
 }
@@ -59,14 +59,14 @@ export default function Header() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-black/5 shadow-sm"
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-4">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
             src="/logo/zuno-logo.png"
             alt="Zuno"
             width={140}
             height={70}
-            className="h-9 w-auto object-contain"
+            className="h-7 sm:h-9 w-auto object-contain"
             priority
           />
         </Link>
@@ -85,17 +85,16 @@ export default function Header() {
           />
         </form>
 
-        <div className="flex items-center gap-1 md:gap-1.5 ml-auto bg-gray-50 md:bg-transparent rounded-full p-1 md:p-0">
+        <div className="flex items-center gap-0.5 sm:gap-1.5 ml-auto">
           <IconLink href="/favoritos" icon={Heart} title="Favoritos" />
-          <IconLink href="/perfil" icon={MessageCircle} title="Mensagens" />
 
           {user?.isAdmin && (
             <Link
               href="/admin"
               title="Painel de administração"
-              className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-[var(--zuno-green)] hover:bg-[var(--zuno-green)]/10 transition-colors"
+              className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-[var(--zuno-green)] hover:bg-[var(--zuno-green)]/10 transition-colors shrink-0"
             >
-              <ShieldCheck size={19} />
+              <ShieldCheck size={18} />
             </Link>
           )}
 
@@ -105,9 +104,9 @@ export default function Header() {
               <button
                 onClick={logout}
                 title="Sair"
-                className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-gray-500 hover:bg-gray-100 hover:text-red-500 transition-colors"
+                className="hidden sm:flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-500 hover:bg-gray-100 hover:text-red-500 transition-colors shrink-0"
               >
-                <LogOut size={19} />
+                <LogOut size={18} />
               </button>
             </>
           ) : (
@@ -118,16 +117,16 @@ export default function Header() {
             <motion.span
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-1.5 bg-[var(--zuno-navy)] text-white px-4 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-blue-900/10 cursor-pointer ml-1"
+              className="flex items-center gap-1.5 bg-[var(--zuno-navy)] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold shadow-md shadow-blue-900/10 cursor-pointer ml-0.5 sm:ml-1 whitespace-nowrap"
             >
-              <Plus size={17} strokeWidth={2.5} />
+              <Plus size={16} strokeWidth={2.5} />
               <span className="hidden sm:inline">Vender</span>
             </motion.span>
           </Link>
         </div>
       </div>
 
-      <div className="md:hidden px-4 pb-3">
+      <div className="md:hidden px-3 sm:px-4 pb-2.5 sm:pb-3">
         <form onSubmit={handleSearch} className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2.5">
           <Search size={18} className="text-gray-400 shrink-0" />
           <input

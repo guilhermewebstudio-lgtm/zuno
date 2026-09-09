@@ -225,14 +225,14 @@ export default function AnuncioPage() {
                   </span>
                 )}
               </p>
-              {sellerRating !== null && sellerRatingCount > 0 && (
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <StarRating value={Math.round(sellerRating)} size={14} />
-                  <span className="text-xs text-gray-400">
-                    {sellerRating.toFixed(1)} ({sellerRatingCount} avaliaç{sellerRatingCount === 1 ? "ão" : "ões"})
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <StarRating value={sellerRating ? Math.round(sellerRating) : 0} size={14} />
+                <span className="text-xs text-gray-400">
+                  {sellerRatingCount > 0
+                    ? `${sellerRating!.toFixed(1)} (${sellerRatingCount} avaliaç${sellerRatingCount === 1 ? "ão" : "ões"})`
+                    : "Ainda sem avaliações"}
+                </span>
+              </div>
             </div>
 
             {user ? (
