@@ -278,7 +278,7 @@ export default function AdminPage() {
                     tick={{ fontSize: 11, fill: "#999" }}
                     tickFormatter={(v) => `€${v}`}
                   />
-                  <Tooltip formatter={(value: number) => [`€${value.toFixed(2)}`, "Receita"]} />
+                  <Tooltip formatter={(value) => [`€${Number(value).toFixed(2)}`, "Receita"]} />
                   <Area type="monotone" dataKey="receita" stroke="#14926b" fill="url(#colorRevenue)" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
